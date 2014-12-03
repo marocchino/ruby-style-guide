@@ -823,6 +823,18 @@ Translations of the guide are available in the following languages:
   end
   ```
 
+* <a name="no-method-bang"></a>
+  Use `!` instead of `.!`.
+<sup>[[link](#no-method-bang)]</sup>
+
+  ```Ruby
+  # bad - valid, but awkward
+  x = something.!
+
+  # good
+  x = !something
+  ```
+
 * <a name="no-and-or-or"></a>
   The `and` and `or` keywords are banned. It's just not worth it. Always use
   `&&` and `||` instead.
