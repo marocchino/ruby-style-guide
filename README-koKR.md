@@ -1,6 +1,6 @@
 # 서론
 
-> 롤 모델이 중요하다.<br/>
+> 롤 모델이 중요하다.<br>
 > -- Officer Alex J. Murphy / RoboCop
 
 나는 루비 개발자로서 항상 한 가지 문제로 괴로웠다. - 파이썬 개발자들은 훌륭한
@@ -58,7 +58,7 @@
 * [Chinese Simplified](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhCN.md)
 * [Chinese Traditional](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhTW.md)
 * [French](https://github.com/porecreat/ruby-style-guide/blob/master/README-frFR.md)
-* [German](https://github.com/arbox/ruby-style-guide/blob/master/README-deDE.md)
+* [German](https://github.com/arbox/de-ruby-style-guide/blob/master/README-deDE.md)
 * [Japanese](https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md)
 * [한국어](https://github.com/dalzony/ruby-style-guide/blob/master/README-koKR.md)
 * [Portuguese](https://github.com/rubensmabueno/ruby-style-guide/blob/master/README-PT-BR.md)
@@ -87,7 +87,7 @@
 
 > 거의 모든 사람들이 자신의 것을 제외한 모든 코딩 스타일이 번잡하고 가독성이
 > 떨어진다고 확신한다. 앞 문장에서 "자신의 것을 제외한"을 없앤다면 아마도 맞는
-> 말일지도...<br/>
+> 말일지도...<br>
 > -- Jerry Coffin (on indentation)
 
 * <a name="utf-8"></a>
@@ -213,7 +213,7 @@
   e = M * c**2
   ```
   `{`, `}` 전후의 공백은 구문을 명확하게 하기 위해 쓸 만한데, 그 이유는
-  문자열에서 삽입 구(embedded expression)를 넣고 싶을 때뿐만 아니라 블록이나
+  문자열 보간법(string interpolation)을 사용할 때뿐만 아니라 블록이나
   해시문에 사용될 수 있기 때문이다. 해시문에서는 다음 두 가지 스타일이
   허용된다.
 
@@ -229,25 +229,16 @@
   있다.) 두 번째 방법은 블록과 해시를 시각적으로 구별화 수 있는 장점이 있다.
   무엇이든 하나를 선택하면, 일관적으로 적용하자.
 
-  삽입 구를 쓸 때도, 양쪽 다 허용된다.
-
-  ```Ruby
-  # 좋은 예 - 공백이 없음
-  "string#{expr}"
-
-  # 괜찮은 예 - 분명히 가독성이 좋음
-  "string#{ expr }"
-  ```
-
-  첫 번째 스타일은 매우 인기 있고, 일반적으로 고수하는 방식이다. 반대로 두 번째
-  스타일은 (확실히) 좀 더 읽기 좋다. 해시와 마찬가지로- 하나를 선택하고,
-  일관적으로 적용하자.
-
 * <a name="no-spaces-braces"></a>
   `(`, `[`뒤 또는 `]`, `)` 앞에 공백을 넣지 않는다.
 <sup>[[link](#no-spaces-braces)]</sup>
 
   ```Ruby
+  # 나쁜 예
+  some( arg ).other
+  [ 1, 2, 3 ].size
+
+  # 좋은 예
   some(arg).other
   [1, 2, 3].size
   ```
@@ -631,6 +622,73 @@
      # body omitted
    end
    ```
+
+* <a name="optional-arguments"></a>
+    선택적인 인자는 인자 목록의 마지막에 선언한다.
+    루비에서 선택적인 인자를 목록 앞쪽에 사용하면 의도치 않은 결과를 반환할 수
+    있다.
+<sup>[[link](#optional-arguments)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  def some_method(a = 1, b = 2, c, d)
+    puts "#{a}, #{b}, #{c}, #{d}"
+  end
+
+  some_method('w', 'x') # => '1, 2, w, x'
+  some_method('w', 'x', 'y') # => 'w, 2, x, y'
+  some_method('w', 'x', 'y', 'z') # => 'w, x, y, z'
+
+  # 좋은 예
+  def some_method(c, d, a = 1, b = 2)
+    puts "#{a}, #{b}, #{c}, #{d}"
+  end
+
+  some_method('w', 'x') # => 'w, x, 1, 2'
+  some_method('w', 'x', 'y') # => 'w, x, y, 2'
+  some_method('w', 'x', 'y', 'z') # => 'w, x, y, z'
+  ```
+
+* <a name="parallel-assignment"></a>
+    변수를 선언할 때 병렬 대입(parallel assignment)을 피한다. 병렬 대입은 메소드
+    호출의 결과일 때, 스플랫 연산자와 사용할 때, 변수를 교환 대입할 때 사용한다.
+    병렬 대입은 일반 대입에 비해 가독성이 떨어진다. 그리고 조금 느리기도 하다.
+<sup>[[link](#parallel-assignment)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  a, b, c, d = 'foo', 'bar', 'baz', 'foobar'
+
+  # 좋은 예
+  a = 'foo'
+  b = 'bar'
+  c = 'baz'
+  d = 'foobar'
+
+  # 좋은 예 - 변수 교환 대입
+  # 변수 교환 대입은 특별한 경우다.
+  # 각 변수에 대입된 값을 교환할 수 있기 때문이다.
+  a = 'foo'
+  b = 'bar'
+
+  a, b = b, a
+  puts a # => 'bar'
+  puts b # => 'foo'
+
+  # 좋은 예 - 메소드 반환
+  def multi_return
+    [1, 2]
+  end
+
+  first, second = multi_return
+
+  # 좋은 예 - 스플랫과 함께 사용
+  first, *list = [1,2,3,4]
+
+  hello_array = *"Hello"
+
+  a = *(1..3)
+  ```
 
 * <a name="no-for-loops"></a>
   `for`을 쓸 때에는 정확히 그 용법을 알고 있을 때에만 사용해야 한다. 대부분
@@ -1078,6 +1136,19 @@
   'test'.upcase
   ```
 
+* <a name="single-action-blocks"></a>
+  블록의 연산이 메소드 호출뿐이라면 프록 발동 단축(proc invocation shorthand)을
+  사용한다.
+<sup>[[link](#single-action-blocks)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  names.map { |name| name.upcase }
+
+  # 좋은 예
+  names.map(&:upcase)
+  ```
+
 * <a name="single-line-blocks"></a>
   한 줄짜리 블록에서는 `do...end`보다 `{...}`가 권장된다. 여러 줄짜리 블록에
   대해 `{...}`를 사용하는 것은 피하라.(줄이 많으면 항상 보기에 안 좋다.)
@@ -1086,7 +1157,7 @@
 <sup>[[link](#single-line-blocks)]</sup>
 
   ```Ruby
-  names = ['Bozhidar', 'Steve', 'Sarah']
+  names = %w(Bozhidar Steve Sarah)
 
   # 나쁜 예
   names.each do |name|
@@ -1102,7 +1173,7 @@
   end.map { |name| name.upcase }
 
   # 좋은 예
-  names.select { |name| name.start_with?('S') }.map { |name| name.upcase }
+  names.select { |name| name.start_with?('S') }.map(&:upcase)
   ```
 
   어떤 사람은 {...}를 사용하는 여러 줄에 걸친 연쇄(chaining)다 보기에 괜찮다고
@@ -1380,6 +1451,39 @@
   잊어버렸을 때 경고할 것이다.
 <sup>[[link](#always-warn-at-runtime)]</sup>
 
+* <a name="no-nested-methods"></a>
+  중첩 메소드 선언을 사용하는 대신, 람다를 사용한다.
+  중첩 메소드 선언은 사실 밖의 메소드와 같은 범위(예를 들어 클래스)에서 메소드를
+  생성한다. 더욱이, "중첩된 메소드"는 선언이 들어있는 메소드가 호출될 떄마다
+  재정의된다.
+<sup>[[link](#no-nested-methods)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  def foo(x)
+    def bar(y)
+      # 몸통 생략
+    end
+
+    bar(x)
+  end
+
+  # 좋은 예 - 위와 같지만, foo가 호출될 때마다 bar가 매번 재정의되지 않는다
+  def bar(y)
+    # 몸통 생략
+  end
+
+  def foo(x)
+    bar(x)
+  end
+
+  # 좋은 예
+  def foo(x)
+    bar = ->(y) { ... }
+    bar.call(x)
+  end
+  ```
+
 * <a name="lambda-multi-line"></a>
   한 줄짜리 본문 블록에 새로운 lambda 구문을 사용하라. `lambda` 메소드는
   여러 줄이 있는 블록에 써라.
@@ -1404,6 +1508,32 @@
     tmp = a * 7
     tmp * b / 50
   end
+  ```
+
+* <a name="stabby-lambda-with-args"></a>
+매개변수와 함께 새로운 람다(stabby lambda)를 사용할 때에는 매개변수 괄호를
+생략하지 않는다.
+<sup>[[link](#stabby-lambda-with-args)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  l = ->x, y { something(x, y) }
+
+  # 좋은 예
+  l = ->(x, y) { something(x, y) }
+  ```
+
+* <a name="stabby-lambda-no-args"></a>
+매개변수와 없이 새로운 람다(stabby lambda)를 사용할 때에는 매개변수 괄호를
+생략한다.
+<sup>[[link](#stabby-lambda-no-args)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  l = ->() { something }
+
+  # 좋은 예
+  l = -> { something }
   ```
 
 * <a name="proc"></a>
@@ -1711,8 +1841,10 @@
   ```
 
 * <a name="reverse-each"></a>
-  `reverse.each`보다는 `reverse_each`를 써라. `reverse_each`는 새로운 배열을
-  할당하지 않는다는 장점이 있다.
+  `reverse.each`보다는 `reverse_each`를 써라. `include Enumerable`을 사용하는
+  몇몇 클래스에서 좀 더 효율적인 구현을 사용하기 떄문이다. 최악 경우
+  클래스에서 특별한 구현을 사용하지 않는다고 해도, `Enumerable`에서 상속된
+  일반적인 구현은 `reverse.each` 정도의 효율을 낸다.
 <sup>[[link](#reverse-each)]</sup>
 
   ```Ruby
@@ -1725,7 +1857,7 @@
 
 ## 네이밍
 
-> 프로그래밍에서 정말 어려운 것은 캐시무효화와 이름 짓기뿐이다. <br/>
+> 프로그래밍에서 정말 어려운 것은 캐시무효화와 이름 짓기뿐이다. <br>
 > -- Phil Karlton
 
 * <a name="english-identifiers"></a>
@@ -1790,12 +1922,20 @@
     ...
   end
 
+  class XmlSomething
+    ...
+  end
+
   # 좋은 예
   class SomeClass
     ...
   end
 
   class SomeXML
+    ...
+  end
+
+  class XMLSomething
     ...
   end
   ```
@@ -1937,7 +2077,7 @@
   주석은 최신 상태로 유지한다. 코드내용과 맞지 않은 주석은 없는 것이 낫다.
 <sup>[[link](#comment-upkeep)]</sup>
 
-> 좋은 주석은 좋은 유머이다. - 설명이 필요없다. <br/>
+> 좋은 주석은 좋은 유머와 같다. - 설명이 필요없다. <br>
 > -- Russ Olsen
 
 * <a name="refactor-dont-comment"></a>
@@ -2034,7 +2174,11 @@
     def self.some_method
     end
 
-    # public 인스턴스 메소드가 따라서 나온다.
+    # 초기화는 클래스 메소드와 다른 인스턴스 메소드 사이에 온다.
+    def initialize
+    end
+
+    # 다른 public 인스턴스 메소드가 뒤에 온다.
     def some_method
     end
 
@@ -2372,10 +2516,10 @@
   end
   ```
 
-* <a name="def-self-singletons"></a>
-  싱글톤 메소드를 정의할 때는 `def self.method`를 사용한다. 이렇게 하면
+* <a name="def-self-class-methods"></a>
+  클래스 메소드를 정의할 때는 `def self.method`를 사용한다. 이렇게 하면
   클래스명이 반복되지 않기 때문에 클래스명 변경으로 리펙토링할 때 좀 더 쉬워진다.
-<sup>[[link](#def-self-singletons)]</sup>
+<sup>[[link](#def-self-class-methods)]</sup>
 
   ```Ruby
   class TestClass
@@ -2389,7 +2533,7 @@
       # body 생략
     end
 
-    # 싱글톤 메소드가 많은 경우 아래와 같이
+    # 클래스 메소드가 많은 경우 아래와 같이
     # 사용하면 편리하다.
     class << self
       def first_method
@@ -2894,17 +3038,18 @@
 
 * <a name="use-hash-blocks"></a>
   `Hash#fetch` 기본 값 대신 블록을 사용하는 것이 좋다.
-<sup>[[link](#use-hash-blocks)]</sup>
+  실행해야 할 코드는 부작용이 있을 수도 있고, 실행 비용이 비쌀 수도 있다.
+  <sup>[[link](#use-hash-blocks)]</sup>
 
   ```Ruby
   batman = { name: 'Bruce Wayne' }
 
   # 나쁜 예 - 만약 기본 값을 사용하는 경우, 함수가 먼저 실행이 되므로
   # 여러 번 실행되는 경우 프로그램이 느려질 수 있다.
-  batman.fetch(:powers, get_batman_powers) # get_batman_powers은 오래 걸리는 함수이다.
+  batman.fetch(:powers, obtain_batman_powers) # obtain_batman_powers는 오래 걸리는 함수이다.
 
   # good - 블록은 나중에 실행된다. 그래서 KeyError 예외가 발생하는 경우만 실행된다.
-  batman.fetch(:powers) { get_batman_powers }
+  batman.fetch(:powers) { obtain_batman_powers }
   ```
 
 * <a name="hash-values-at"></a>
@@ -2979,14 +3124,17 @@
   email_with_name = format('%s <%s>', user.name, user.email)
   ```
 
-* <a name="pad-string-interpolation"></a>
-  문자열 삽입 코드에 공백을 양쪽으로 주는 것을 고려해본다. 문자열로부터 분리되어
-  코드가 좀 더 명확해진다.
-<sup>[[link](#pad-string-interpolation)]</sup>
+* <a name="string-interpolation"></a>
+  보간 표현식에서, 괄호 양 옆에 스페이스를 넣지 않는 것이 좋다.
 
   ```Ruby
-  "#{ user.last_name }, #{ user.first_name }"
+  # 나쁜 예
+  "From: #{ user.first_name }, #{ user.last_name }"
+
+  # 좋은 예
+  "From: #{user.first_name}, #{user.last_name}"
   ```
+<sup>[[link](#string-interpolation)]</sup>
 
 * <a name="consistent-string-literals"></a>
   일관된 문자열 따옴표 스타일을 선택한다. 루비 커뮤니티에는 많이 사용하는 두 가지
@@ -3016,8 +3164,7 @@
     name = "Bozhidar"
     ```
 
-  두 번째 스타일이 루비 커뮤니티에서 조금 더 일반적이다. 하지만 이 가이드에서는
-  첫 번째 스타일로 통일한다.
+  이 가이드에서 문자열 리터럴은 첫 번째 스타일로 통일한다.
 
 * <a name="no-character-literals"></a>
   문자 리터럴인 `?x`는 사용하지 않는다. 루비 1.9에서는 기본적으로 필요 없다.
@@ -3126,8 +3273,8 @@
 
 ## 정규식
 
-> 어떤 사람들은 문제에 직면했을 때 다음과 같이 생각한다.<br/>
-> "음 알았어, 난 정규식을 사용 할 거야." 이제 그들에게는 두개의 문제가 생겼다.<br/>
+> 어떤 사람들은 문제에 직면했을 때 다음과 같이 생각한다.<br>
+> "음 알았어, 난 정규식을 사용 할 거야." 이제 그들에게는 두 개의 문제가 생겼다.<br>
 > -- Jamie Zawinski
 
 * <a name="no-regexp-for-plaintext"></a>
@@ -3269,11 +3416,11 @@
 
   ```Ruby
   # 나쁜 예
-  %r(\s+)
+  %r{\s+}
 
   # 좋은 예
-  %r(^/(.*)$)
-  %r(^/blog/2011/(.*)$)
+  %r{^/(.*)$}
+  %r{^/blog/2011/(.*)$}
   ```
 
 * <a name="percent-x"></a>
@@ -3520,7 +3667,7 @@
 친구나 동료에게 트윗하거나 공유하라. 우리가 받는 모든 댓글이나 의견, 제안은 이
 가이드를 좀 더 좋게 만들 수 있다. 더 좋은 가이드를 가지고 싶지 않은가?
 
-화이팅,<br/>
+화이팅,<br>
 [Bozhidar](https://twitter.com/bbatsov)
 
 [PEP-8]: http://www.python.org/dev/peps/pep-0008/
