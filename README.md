@@ -1,6 +1,6 @@
 # Prelude
 
-> Role models are important. <br/>
+> Role models are important. <br>
 > -- Officer Alex J. Murphy / RoboCop
 
 One thing has always bothered me as a Ruby developer - Python developers have a
@@ -69,7 +69,7 @@ Translations of the guide are available in the following languages:
 * [Chinese Simplified](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhCN.md)
 * [Chinese Traditional](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhTW.md)
 * [French](https://github.com/porecreat/ruby-style-guide/blob/master/README-frFR.md)
-* [German](https://github.com/arbox/ruby-style-guide/blob/master/README-deDE.md)
+* [German](https://github.com/arbox/de-ruby-style-guide/blob/master/README-deDE.md)
 * [Japanese](https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md)
 * [Korean](https://github.com/dalzony/ruby-style-guide/blob/master/README-koKR.md)
 * [Portuguese](https://github.com/rubensmabueno/ruby-style-guide/blob/master/README-PT-BR.md)
@@ -98,7 +98,7 @@ Translations of the guide are available in the following languages:
 
 > Nearly everybody is convinced that every style but their own is
 > ugly and unreadable. Leave out the "but their own" and they're
-> probably right... <br/>
+> probably right... <br>
 > -- Jerry Coffin (on indentation)
 
 * <a name="utf-8"></a>
@@ -227,8 +227,8 @@ Translations of the guide are available in the following languages:
   ```
 
   `{` and `}` deserve a bit of clarification, since they are used
-  for block and hash literals, as well as embedded expressions in
-  strings. For hash literals two styles are considered acceptable.
+  for block and hash literals, as well as string interpolation.
+  For hash literals two styles are considered acceptable.
 
   ```Ruby
   # good - space after { and before }
@@ -243,27 +243,16 @@ Translations of the guide are available in the following languages:
   the advantage of adding visual difference between block and hash
   literals. Whichever one you pick - apply it consistently.
 
-  As far as embedded expressions go, there are also two acceptable
-  options:
-
-  ```Ruby
-  # good - no spaces
-  "string#{expr}"
-
-  # ok - arguably more readable
-  "string#{ expr }"
-  ```
-
-  The first style is extremely more popular and you're generally
-  advised to stick with it. The second, on the other hand, is
-  (arguably) a bit more readable. As with hashes - pick one style
-  and apply it consistently.
-
 * <a name="no-spaces-braces"></a>
   No spaces after `(`, `[` or before `]`, `)`.
 <sup>[[link](#no-spaces-braces)]</sup>
 
   ```Ruby
+  # bad
+  some( arg ).other
+  [ 1, 2, 3 ].size
+
+  # good
   some(arg).other
   [1, 2, 3].size
   ```
@@ -650,6 +639,74 @@ Translations of the guide are available in the following languages:
      # body omitted
    end
    ```
+
+* <a name="optional-arguments"></a>
+    Define optional arguments at the end of the list of arguments.
+    Ruby has some unexpected results when calling methods that have
+    optional arguments at the front of the list.
+<sup>[[link](#optional-arguments)]</sup>
+
+  ```Ruby
+  # bad
+  def some_method(a = 1, b = 2, c, d)
+    puts "#{a}, #{b}, #{c}, #{d}"
+  end
+
+  some_method('w', 'x') # => '1, 2, w, x'
+  some_method('w', 'x', 'y') # => 'w, 2, x, y'
+  some_method('w', 'x', 'y', 'z') # => 'w, x, y, z'
+
+  # good
+  def some_method(c, d, a = 1, b = 2)
+    puts "#{a}, #{b}, #{c}, #{d}"
+  end
+
+  some_method('w', 'x') # => 'w, x, 1, 2'
+  some_method('w', 'x', 'y') # => 'w, x, y, 2'
+  some_method('w', 'x', 'y', 'z') # => 'w, x, y, z'
+  ```
+
+* <a name="parallel-assignment"></a>
+    Avoid the use of parallel assignment for defining variables. Parallel
+    assignment is allowed when it is the return of a method call, used with
+    the splat operator, or when used to swap variable assignment. Parallel
+    assignment is less readable than separate assignment.
+<sup>[[link](#parallel-assignment)]</sup>
+
+  ```Ruby
+  # bad
+  a, b, c, d = 'foo', 'bar', 'baz', 'foobar'
+
+  # good
+  a = 'foo'
+  b = 'bar'
+  c = 'baz'
+  d = 'foobar'
+
+  # good - swapping variable assignment
+  # Swapping variable assignment is a special case because it will allow you to
+  # swap the values that are assigned to each variable.
+  a = 'foo'
+  b = 'bar'
+
+  a, b = b, a
+  puts a # => 'bar'
+  puts b # => 'foo'
+
+  # good - method return
+  def multi_return
+    [1, 2]
+  end
+
+  first, second = multi_return
+
+  # good - use with splat
+  first, *list = [1,2,3,4]
+
+  hello_array = *"Hello"
+
+  a = *(1..3)
+  ```
 
 * <a name="no-for-loops"></a>
     Do not use `for`, unless you know exactly why. Most of the time iterators
@@ -1106,6 +1163,18 @@ condition](#safe-assignment-in-condition).
   'test'.upcase
   ```
 
+* <a name="single-action-blocks"></a>
+  Use the proc invocation shorthand when the invoked method is the only operation of a block.
+<sup>[[link](#single-action-blocks)]</sup>
+
+  ```Ruby
+  # bad
+  names.map { |name| name.upcase }
+
+  # good
+  names.map(&:upcase)
+  ```
+
 * <a name="single-line-blocks"></a>
   Prefer `{...}` over `do...end` for single-line blocks.  Avoid using `{...}`
   for multi-line blocks (multiline chaining is always ugly). Always use
@@ -1114,7 +1183,7 @@ condition](#safe-assignment-in-condition).
 <sup>[[link](#single-line-blocks)]</sup>
 
   ```Ruby
-  names = ['Bozhidar', 'Steve', 'Sarah']
+  names = %w(Bozhidar Steve Sarah)
 
   # bad
   names.each do |name|
@@ -1130,7 +1199,7 @@ condition](#safe-assignment-in-condition).
   end.map { |name| name.upcase }
 
   # good
-  names.select { |name| name.start_with?('S') }.map { |name| name.upcase }
+  names.select { |name| name.start_with?('S') }.map(&:upcase)
   ```
 
   Some will argue that multiline chaining would look OK with the use of {...},
@@ -1409,6 +1478,39 @@ condition](#safe-assignment-in-condition).
   you forget either of the rules above!
 <sup>[[link](#always-warn-at-runtime)]</sup>
 
+* <a name="no-nested-methods"></a>
+  Do not use nested method definitions, use lambda instead.
+  Nested method definitions actually produce methods in the same scope
+  (e.g. class) as the outer method. Furthermore, the "nested method" will be
+  redefined every time the method containing its definition is invoked.
+<sup>[[link](#no-nested-methods)]</sup>
+
+  ```Ruby
+  # bad
+  def foo(x)
+    def bar(y)
+      # body omitted
+    end
+
+    bar(x)
+  end
+
+  # good - the same as the previous, but no bar redefinition on every foo call
+  def bar(y)
+    # body omitted
+  end
+
+  def foo(x)
+    bar(x)
+  end
+
+  # also good
+  def foo(x)
+    bar = ->(y) { ... }
+    bar.call(x)
+  end
+  ```
+
 * <a name="lambda-multi-line"></a>
   Use the new lambda literal syntax for single line body blocks. Use the
   `lambda` method for multi-line blocks.
@@ -1433,6 +1535,32 @@ condition](#safe-assignment-in-condition).
     tmp = a * 7
     tmp * b / 50
   end
+  ```
+
+* <a name="stabby-lambda-with-args"></a>
+Don't omit the parameter parentheses when defining a stabby lambda with
+parameters.
+<sup>[[link](#stabby-lambda-with-args)]</sup>
+
+  ```Ruby
+  # bad
+  l = ->x, y { something(x, y) }
+
+  # good
+  l = ->(x, y) { something(x, y) }
+  ```
+
+* <a name="stabby-lambda-no-args"></a>
+Omit the parameter parentheses when defining a stabby lambda with
+no parameters.
+<sup>[[link](#stabby-lambda-no-args)]</sup>
+
+  ```Ruby
+  # bad
+  l = ->() { something }
+
+  # good
+  l = -> { something }
   ```
 
 * <a name="proc"></a>
@@ -1705,7 +1833,7 @@ condition](#safe-assignment-in-condition).
   end
   ```
 
-* <a name="map-fine-select-reduce-size"></a>
+* <a name="map-find-select-reduce-size"></a>
   Prefer `map` over `collect`, `find` over `detect`, `select` over `find_all`,
   `reduce` over `inject` and `size` over `length`. This is not a hard
   requirement; if the use of the alias enhances readability, it's ok to use it.
@@ -1713,7 +1841,7 @@ condition](#safe-assignment-in-condition).
   programming languages. The reason the use of `select` is encouraged over
   `find_all` is that it goes together nicely with `reject` and its name is
   pretty self-explanatory.
-<sup>[[link](#map-fine-select-reduce-size)]</sup>
+<sup>[[link](#map-find-select-reduce-size)]</sup>
 
 * <a name="count-vs-size"></a>
   Don't use `count` as a substitute for `size`. For `Enumerable` objects other
@@ -1745,8 +1873,11 @@ condition](#safe-assignment-in-condition).
   ```
 
 * <a name="reverse-each"></a>
-  Use `reverse_each` instead of `reverse.each`. `reverse_each` doesn't do a
-  new array allocation and that's a good thing.
+  Prefer `reverse_each` to `reverse.each` because some classes that `include
+  Enumerable` will provide an efficient implementation. Even in the worst case
+  where a class does not provide a specialized implementation, the general
+  implementation inherited from `Enumerable` will be at least as efficient as
+  using `reverse.each`.
 <sup>[[link](#reverse-each)]</sup>
 
   ```Ruby
@@ -1760,7 +1891,7 @@ condition](#safe-assignment-in-condition).
 ## Naming
 
 > The only real difficulties in programming are cache invalidation and
-> naming things. <br/>
+> naming things. <br>
 > -- Phil Karlton
 
 * <a name="english-identifiers"></a>
@@ -1825,12 +1956,20 @@ condition](#safe-assignment-in-condition).
     ...
   end
 
+  class XmlSomething
+    ...
+  end
+
   # good
   class SomeClass
     ...
   end
 
   class SomeXML
+    ...
+  end
+
+  class XMLSomething
     ...
   end
   ```
@@ -1941,7 +2080,7 @@ condition](#safe-assignment-in-condition).
 > Good code is its own best documentation. As you're about to add a
 > comment, ask yourself, "How can I improve the code so that this
 > comment isn't needed?" Improve the code and then document it to make
-> it even clearer. <br/>
+> it even clearer. <br>
 > -- Steve McConnell
 
 * <a name="no-comments"></a>
@@ -1976,7 +2115,7 @@ condition](#safe-assignment-in-condition).
   comment at all.
 <sup>[[link](#comment-upkeep)]</sup>
 
-> Good code is like a good joke - it needs no explanation. <br/>
+> Good code is like a good joke - it needs no explanation. <br>
 > -- Russ Olsen
 
 * <a name="refactor-dont-comment"></a>
@@ -1998,7 +2137,8 @@ condition](#safe-assignment-in-condition).
 
 * <a name="indent-annotations"></a>
   If multiple lines are required to describe the problem, subsequent lines
-  should be indented two spaces after the `#`.
+  should be indented three spaces after the `#` (one general plus two for
+  indentation purpose).
 <sup>[[link](#indent-annotations)]</sup>
 
   ```Ruby
@@ -2079,7 +2219,11 @@ condition](#safe-assignment-in-condition).
     def self.some_method
     end
 
-    # followed by public instance methods
+    # initialization goes between class methods and other instance methods
+    def initialize
+    end
+
+    # followed by other public instance methods
     def some_method
     end
 
@@ -2301,10 +2445,19 @@ condition](#safe-assignment-in-condition).
   ````
 
 * <a name="no-extend-struct-new"></a>
-  Don't extend a `Struct.new` - it already is a new class. Extending it
-  introduces a superfluous class level and may also introduce weird errors if
-  the file is required multiple times.
+  Don't extend an instance initialized by `Struct.new`. Extending it introduces
+  a superfluous class level and may also introduce weird errors if the file is
+  required multiple times.
 <sup>[[link](#no-extend-struct-new)]</sup>
+
+  ```Ruby
+  # bad
+  class Person < Struct.new(:first_name, :last_name)
+  end
+
+  # good
+  Person = Struct.new(:first_name, :last_name)
+  ````
 
 * <a name="factory-methods"></a>
   Consider adding factory methods to provide additional sensible ways to
@@ -2392,7 +2545,7 @@ condition](#safe-assignment-in-condition).
 <sup>[[link](#visibility)]</sup>
 
 * <a name="indent-public-private-protected"></a>
-  Indent the `public`, `protected`, and `private` methods as much the method
+  Indent the `public`, `protected`, and `private` methods as much as the method
   definitions they apply to. Leave one blank line above the visibility modifier
   and one blank line below in order to emphasize that it applies to all methods
   below it.
@@ -2416,10 +2569,10 @@ condition](#safe-assignment-in-condition).
   end
   ```
 
-* <a name="def-self-singletons"></a>
-  Use `def self.method` to define singleton methods. This makes the code
+* <a name="def-self-class-methods"></a>
+  Use `def self.method` to define class methods. This makes the code
   easier to refactor since the class name is not repeated.
-<sup>[[link](#def-self-singletons)]</sup>
+<sup>[[link](#def-self-class-methods)]</sup>
 
   ```Ruby
   class TestClass
@@ -2434,7 +2587,7 @@ condition](#safe-assignment-in-condition).
     end
 
     # Also possible and convenient when you
-    # have to define many singleton methods.
+    # have to define many class methods.
     class << self
       def first_method
         # body omitted
@@ -2703,7 +2856,6 @@ condition](#safe-assignment-in-condition).
   # also good
   begin
     # an exception occurs here
-
   rescue StandardError => e
     # exception handling
   end
@@ -2718,25 +2870,25 @@ condition](#safe-assignment-in-condition).
   # bad
   begin
     # some code
-  rescue Exception => e
-    # some handling
   rescue StandardError => e
+    # some handling
+  rescue IOError => e
     # some handling that will never be executed
   end
 
   # good
   begin
     # some code
-  rescue StandardError => e
+  rescue IOError => e
     # some handling
-  rescue Exception => e
+  rescue StandardError => e
     # some handling
   end
   ```
 
-* <a name="file-close"></a>
-  Release external resources obtained by your program in an ensure block.
-<sup>[[link](#file-close)]</sup>
+* <a name="release-resources"></a>
+  Release external resources obtained by your program in an `ensure` block.
+<sup>[[link](#release-resources)]</sup>
 
   ```Ruby
   f = File.open('testfile')
@@ -2746,6 +2898,23 @@ condition](#safe-assignment-in-condition).
     # .. handle error
   ensure
     f.close if f
+  end
+  ```
+
+* <a name="auto-release-resources"></a>
+Use versions of resource obtaining methods that do automatic
+resource cleanup when possible.
+<sup>[[link](#auto-release-resources)]</sup>
+
+  ```Ruby
+  # bad - you need to close the file descriptor explicitly
+  f = File.open('testfile')
+    # ...
+  f.close
+
+  # good - the file descriptor is closed automatically
+  File.open('testfile') do |f|
+    # ...
   end
   ```
 
@@ -2929,18 +3098,19 @@ condition](#safe-assignment-in-condition).
   ```
 
 * <a name="use-hash-blocks"></a>
-  Prefer the use of the block instead of the default value in `Hash#fetch`.
-<sup>[[link](#use-hash-blocks)]</sup>
+  Prefer the use of the block instead of the default value in `Hash#fetch`
+  if the code that has to be evaluated may have side effects or be expensive.
+  <sup>[[link](#use-hash-blocks)]</sup>
 
   ```Ruby
   batman = { name: 'Bruce Wayne' }
 
   # bad - if we use the default value, we eager evaluate it
   # so it can slow the program down if done multiple times
-  batman.fetch(:powers, get_batman_powers) # get_batman_powers is an expensive call
+  batman.fetch(:powers, obtain_batman_powers) # obtain_batman_powers is an expensive call
 
   # good - blocks are lazy evaluated, so only triggered in case of KeyError exception
-  batman.fetch(:powers) { get_batman_powers }
+  batman.fetch(:powers) { obtain_batman_powers }
   ```
 
 * <a name="hash-values-at"></a>
@@ -2965,6 +3135,42 @@ condition](#safe-assignment-in-condition).
   Do not modify a collection while traversing it.
 <sup>[[link](#no-modifying-collections)]</sup>
 
+* <a name="accessing-elements-directly"></a>
+  When accessing elements of a collection, avoid direct access
+  via `[n]` by using an alternate form of the reader method if it is
+  supplied. This guards you from calling `[]` on `nil`.
+<sup>[[link](#accessing-elements-directly)]</sup>
+
+  ```Ruby
+  # bad
+  Regexp.last_match[1]
+
+  # good
+  Regexp.last_match(1)
+  ```
+
+* <a name="provide-alternate-accessor-to-collections"></a>
+  When providing an accessor for a collection, provide an alternate form
+  to save users from checking for `nil` before accessing an element in
+  the collection.
+<sup>[[link](#provide-alternate-accessor-to-collections)]</sup>
+
+  ```Ruby
+  # bad
+  def awesome_things
+    @awesome_things
+  end
+
+  # good
+  def awesome_things(index = nil)
+    if index && @awesome_things
+      @awesome_things[index]
+    else
+      @awesome_things
+    end
+  end
+  ```
+
 ## Strings
 
 * <a name="string-interpolation"></a>
@@ -2983,13 +3189,16 @@ condition](#safe-assignment-in-condition).
   email_with_name = format('%s <%s>', user.name, user.email)
   ```
 
-* <a name="pad-string-interpolation"></a>
-  Consider padding string interpolation code with space. It more clearly sets
-  the code apart from the string.
-<sup>[[link](#pad-string-interpolation)]</sup>
+* <a name="string-interpolation"></a>
+  With interpolated expressions, there should be no padded-spacing inside the braces.
+<sup>[[link](#string-interpolation)]</sup>
 
   ```Ruby
-  "#{ user.last_name }, #{ user.first_name }"
+  # bad
+  "From: #{ user.first_name }, #{ user.last_name }"
+
+  # good
+  "From: #{user.first_name}, #{user.last_name}"
   ```
 
 * <a name="consistent-string-literals"></a>
@@ -3021,9 +3230,7 @@ condition](#safe-assignment-in-condition).
     name = "Bozhidar"
     ```
 
-  The second style is arguably a bit more popular in the Ruby
-  community. The string literals in this guide, however, are
-  aligned with the first style.
+  The string literals in this guide are aligned with the first style.
 
 * <a name="no-character-literals"></a>
   Don't use the character literal syntax `?x`. Since Ruby 1.9 it's basically
@@ -3093,6 +3300,14 @@ condition](#safe-assignment-in-condition).
 <sup>[[link](#concat-strings)]</sup>
 
   ```Ruby
+  # bad
+  html = ''
+  html += '<h1>Page title</h1>'
+
+  paragraphs.each do |paragraph|
+    html += "<p>#{paragraph}</p>"
+  end
+
   # good and also fast
   html = ''
   html << '<h1>Page title</h1>'
@@ -3138,7 +3353,7 @@ condition](#safe-assignment-in-condition).
 ## Regular Expressions
 
 > Some people, when confronted with a problem, think
-> "I know, I'll use regular expressions." Now they have two problems.<br/>
+> "I know, I'll use regular expressions." Now they have two problems.<br>
 > -- Jamie Zawinski
 
 * <a name="no-regexp-for-plaintext"></a>
@@ -3157,17 +3372,20 @@ condition](#safe-assignment-in-condition).
   ```
 
 * <a name="non-capturing-regexp"></a>
-  Use non-capturing groups when you don't use captured result of parentheses.
+  Use non-capturing groups when you don't use the captured result.
 <sup>[[link](#non-capturing-regexp)]</sup>
 
   ```Ruby
-  /(first|second)/   # bad
-  /(?:first|second)/ # good
+  # bad
+  /(first|second)/
+
+  # good
+  /(?:first|second)/
   ```
 
 * <a name="no-perl-regexp-last-matchers"></a>
   Don't use the cryptic Perl-legacy variables denoting last regexp group
-  matches (`$1`, `$2`, etc). Use `Regexp.last_match[n]` instead.
+  matches (`$1`, `$2`, etc). Use `Regexp.last_match(n)` instead.
 <sup>[[link](#no-perl-regexp-last-matchers)]</sup>
 
   ```Ruby
@@ -3178,7 +3396,7 @@ condition](#safe-assignment-in-condition).
   process $1
 
   # good
-  process Regexp.last_match[1]
+  process Regexp.last_match(1)
   ```
 
 * <a name="no-numbered-regexes"></a>
@@ -3190,7 +3408,7 @@ condition](#safe-assignment-in-condition).
   # bad
   /(regexp)/ =~ string
   ...
-  process Regexp.last_match[1]
+  process Regexp.last_match(1)
 
   # good
   /(?<meaningful_var>regexp)/ =~ string
@@ -3231,8 +3449,14 @@ condition](#safe-assignment-in-condition).
   ```
 
 * <a name="gsub-blocks"></a>
-  For complex replacements `sub`/`gsub` can be used with block or hash.
+  For complex replacements `sub`/`gsub` can be used with a block or a hash.
 <sup>[[link](#gsub-blocks)]</sup>
+
+  ```Ruby
+  words = 'foo bar'
+  words.sub(/f/, 'f' => 'F') # => 'Foo bar'
+  words.gsub(/\w+/) { |word| word.capitalize } # => 'Foo Bar'
+  ```
 
 ## Percent Literals
 
@@ -3275,23 +3499,21 @@ condition](#safe-assignment-in-condition).
   name = 'Bruce Wayne'
   time = "8 o'clock"
   question = '"What did you say?"'
+  quote = %q(<p class='quote'>"What did you say?"</p>)
   ```
 
 * <a name="percent-r"></a>
-  Use `%r` only for regular expressions matching *more than* one '/'
+  Use `%r` only for regular expressions matching *at least* one '/'
   character.
 <sup>[[link](#percent-r)]</sup>
 
   ```Ruby
   # bad
-  %r(\s+)
-
-  # still bad
-  %r(^/(.*)$)
-  # should be /^\/(.*)$/
+  %r{\s+}
 
   # good
-  %r(^/blog/2011/(.*)$)
+  %r{^/(.*)$}
+  %r{^/blog/2011/(.*)$}
   ```
 
 * <a name="percent-x"></a>
@@ -3332,9 +3554,9 @@ condition](#safe-assignment-in-condition).
 
 ## Metaprogramming
 
-* <a name="no-metaprogramming-masturbation"></a>
+* <a name="no-needless-metaprogramming"></a>
   Avoid needless metaprogramming.
-<sup>[[link](#no-metaprogramming-masturbation)]</sup>
+<sup>[[link](#no-needless-metaprogramming)]</sup>
 
 * <a name="no-monkey-patching"></a>
   Do not mess around in core classes when writing libraries.  (Do not
@@ -3490,7 +3712,7 @@ condition](#safe-assignment-in-condition).
 
 ## Tools
 
-Here's some tools to help you automatically check Ruby code against
+Here are some tools to help you automatically check Ruby code against
 this guide.
 
 ### RuboCop
@@ -3545,7 +3767,7 @@ your friends and colleagues. Every comment, suggestion or opinion we
 get makes the guide just a little bit better. And we want to have the
 best possible guide, don't we?
 
-Cheers,<br/>
+Cheers,<br>
 [Bozhidar](https://twitter.com/bbatsov)
 
 [PEP-8]: http://www.python.org/dev/peps/pep-0008/
