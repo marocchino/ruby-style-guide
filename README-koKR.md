@@ -652,7 +652,7 @@
 * <a name="parallel-assignment"></a>
     변수를 선언할 때 병렬 대입(parallel assignment)을 피한다. 병렬 대입은 메소드
     호출의 결과일 때, 스플랫 연산자와 사용할 때, 변수를 교환 대입할 때 사용한다.
-    병렬 대입은 일반 대입에 비해 가독성이 떨어진다. 그리고 조금 느리기도 하다.
+    병렬 대입은 일반 대입에 비해 가독성이 떨어진다.
 <sup>[[link](#parallel-assignment)]</sup>
 
   ```Ruby
@@ -2802,7 +2802,6 @@
   # 이것도 좋은 예
   begin
     # 여기서 예외 발생
-
   rescue StandardError => e
     # 예외 처리
   end
@@ -2817,18 +2816,18 @@
   # 나쁜 예
   begin
     # 코드
-  rescue Exception => e
-    # 예외 처리
   rescue StandardError => e
+    # 예외 처리
+  rescue IOError => e
     # 여기는 실행되지 않는다.
   end
 
   # 좋은 예
   begin
     # 코드
-  rescue StandardError => e
+  rescue IOError => e
     # 예외 처리
-  rescue Exception => e
+  rescue StandardError => e
     # 에외 처리
   end
   ```
@@ -3230,6 +3229,14 @@
 <sup>[[link](#concat-strings)]</sup>
 
   ```Ruby
+  # 나쁜 예
+  html = ''
+  html += '<h1>Page title</h1>'
+
+  paragraphs.each do |paragraph|
+    html += "<p>#{paragraph}</p>"
+  end
+
   # 좋고 더 빠르다
   html = ''
   html << '<h1>Page title</h1>'
@@ -3296,8 +3303,11 @@
 <sup>[[link](#non-capturing-regexp)]</sup>
 
   ```Ruby
-  /(first|second)/   # 나쁜 예
-  /(?:first|second)/ # 좋은 예
+  # 나쁜 예
+  /(first|second)/
+
+  # 좋은 예
+  /(?:first|second)/
   ```
 
 * <a name="no-perl-regexp-last-matchers"></a>
@@ -3369,6 +3379,12 @@
   `sub`/`gsub`를 사용해서 복잡한 치환을 하는 경우 블록이나 해시를 사용할 수 있다.
 <sup>[[link](#gsub-blocks)]</sup>
 
+  ```Ruby
+  words = 'foo bar'
+  words.sub(/f/, 'f' => 'F') # => 'Foo bar'
+  words.gsub(/\w+/) { |word| word.capitalize } # => 'Foo Bar'
+  ```
+
 ## 퍼센트 리터럴
 
 * <a name="percent-q-shorthand"></a>
@@ -3408,6 +3424,7 @@
   name = 'Bruce Wayne'
   time = "8 o'clock"
   question = '"What did you say?"'
+  quote = %q(<p class='quote'>"What did you say?"</p>)
   ```
 
 * <a name="percent-r"></a>
