@@ -57,7 +57,7 @@
 
 * [Chinese Simplified](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhCN.md)
 * [Chinese Traditional](https://github.com/JuanitoFatas/ruby-style-guide/blob/master/README-zhTW.md)
-* [French](https://github.com/porecreat/ruby-style-guide/blob/master/README-frFR.md)
+* [French](https://github.com/gauthier-delacroix/ruby-style-guide/blob/master/README-frFR.md)
 * [German](https://github.com/arbox/de-ruby-style-guide/blob/master/README-deDE.md)
 * [Japanese](https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md)
 * [한국어](https://github.com/dalzony/ruby-style-guide/blob/master/README-koKR.md)
@@ -270,8 +270,8 @@
     ```
 
 * <a name="indent-when-to-case"></a>
-  `when`은 `case`와 같은 깊이로 들여 쓰자. 많은 사람들이 동의할 수 없다는 것을
-  알지만, "The RubyProgramming Language"와 "Programming Ruby"에서 사용하는
+  `when`은 `case`와 같은 깊이로 들여 쓰자.
+  "The RubyProgramming Language"와 "Programming Ruby"에서 사용하는
   스타일이다.
 <sup>[[link](#indent-when-to-case)]</sup>
 
@@ -690,6 +690,26 @@
   a = *(1..3)
   ```
 
+* <a name="trailing-underscore-variables"></a>
+  병렬 대입할 때 불필요한 뒤의 밑줄 변수를 피하라. 뒤의 밑줄 변수는 대입의
+  왼쪽에 스프렛 변수가 정의 되고 스프렛 변수가 밑줄이 아닐 때만 필요하다.
+<sup>[[link]](#trailing-underscore-variables)</sup>
+
+  ```Ruby
+  # 나쁜 예
+  a, b, _ = *foo
+  a, _, _ = *foo
+  a, *_ = *foo
+
+  # 좋은 예
+  *a, _ = *foo
+  *a, b, _ = *foo
+  a, = *foo
+  a, b, = *foo
+  a, _b = *foo
+  a, _b, = *foo
+  ```
+
 * <a name="no-for-loops"></a>
   `for`을 쓸 때에는 정확히 그 용법을 알고 있을 때에만 사용해야 한다. 대부분
   반복자(iterator)가 `for` 대신 사용된다. `for` 구문은 `each`의 관점에서
@@ -919,6 +939,19 @@
       # multi-line body omitted
     end
   end
+  ```
+
+* <a name="no-nested-modifiers"></a>
+  중첩된 `if/unless/while/until` 조건의 사용을 피하라. 적절하게 `&&/||`를
+  사용하라.
+<sup>[[link](#no-nested-modifiers)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  do_something if other_condition if some_condition
+
+  # 좋은 예
+  do_something if some_condition && other_condition
   ```
 
 * <a name="unless-for-negatives"></a>
@@ -2061,7 +2094,7 @@
 
 * <a name="english-syntax"></a>
   한 단어 이상의 주석은 대문자 표기법과 구두점 규칙을 사용한다. 마침표 뒤에는
-  [공백](http://en.wikipedia.org/wiki/Sentence_spacing)을 사용한다.
+  [공백](https://en.wikipedia.org/wiki/Sentence_spacing)을 사용한다.
 <sup>[[link](#english-syntax)]</sup>
 
 * <a name="no-superfluous-comments"></a>
@@ -2302,11 +2335,11 @@
 
 * <a name="liskov"></a>
   클래스 계층을 디자인 할 때는 [리스코프 치환
-  원칙](http://ko.wikipedia.org/wiki/리스코프_치환_원칙)에 따른다.
+  원칙](https://ko.wikipedia.org/wiki/리스코프_치환_원칙)에 따른다.
 <sup>[[link](#liskov)]</sup>
 
 * <a name="solid-design"></a>
-  클래스는 가능한 한 [SOLID](http://ko.wikipedia.org/wiki/SOLID) 원칙을 따른다.
+  클래스는 가능한 한 [SOLID](https://ko.wikipedia.org/wiki/SOLID) 원칙을 따른다.
 <sup>[[link](#solid-design)]</sup>
 
 * <a name="define-to-s"></a>
@@ -2424,7 +2457,7 @@
   ```
 
 * <a name="duck-typing"></a>
-  상속보다는 [duck-typing](http://ko.wikipedia.org/wiki/덕_타이핑)을 쓰는 것이 더 좋다.
+  상속보다는 [duck-typing](https://ko.wikipedia.org/wiki/덕_타이핑)을 쓰는 것이 더 좋다.
 <sup>[[link](#duck-typing)]</sup>
 
   ```Ruby
@@ -3560,6 +3593,59 @@
   사용한다.
 <sup>[[link](#prefer-public-send)]</sup>
 
+  ```ruby
+  # Activatable concern을 인클루드하는 ActiveModel Organization이 있다
+  module Activatable
+    extend ActiveSupport::Concern
+
+    included do
+      before_create :create_token
+    end
+
+    private
+
+    def reset_token
+      ...
+    end
+
+    def create_token
+      ...
+    end
+
+    def activate!
+      ...
+    end
+  end
+
+  class Organization < ActiveRecord::Base
+    include Activatable
+  end
+
+  linux_organization = Organization.find(...)
+  # 나쁜 예 - 프라이버시 위반
+  linux_organization.send(:reset_token)
+  # 좋은 예 - 예외를 발생 시킴
+  linux_organization.public_send(:reset_token)
+  ```
+
+* <a name="prefer-__send__"></a>
+  `send`대신 `__send__`를 사용한다. `send`는 있는 메소드와 겹칠 수 있다.
+<sup>[[link](#prefer-__send__)]</sup>
+
+  ```ruby
+  require 'socket'
+
+  u1 = UDPSocket.new
+  u1.bind('127.0.0.1', 4913)
+  u2 = UDPSocket.new
+  u2.connect('127.0.0.1', 4913)
+  # 받을 객체에 메세지를 보내지 않음.
+  # 대신 UDP 소켓에 메세지를 보냄.
+  u2.send :sleep, 0
+  # 받을 객에세 메세지를 보냄.
+  u2.__send__ ...
+  ```
+
 ## 그 밖에
 
 * <a name="always-warn"></a>
@@ -3662,10 +3748,10 @@
 개선을 위해서 티켓을 열거나 풀 리퀘스트를 마음껏 보내라. 당신의 도움에 미리
 감사한다!
 
-또 이 프로젝트(와 RuboCop)에 금전적인 기부는 [gittip](https://www.gittip.com/bbatsov)을
+또 이 프로젝트(와 RuboCop)에 금전적인 기부는 [Gratipay](https://gratipay.com/~bbatsov/)를
 통해서 할 수 있다.
 
-[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/bbatsov)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/~bbatsov/)
 
 ## 어떻게 참여하나요?
 
@@ -3687,9 +3773,9 @@
 화이팅,<br>
 [Bozhidar](https://twitter.com/bbatsov)
 
-[PEP-8]: http://www.python.org/dev/peps/pep-0008/
+[PEP-8]: https://www.python.org/dev/peps/pep-0008/
 [rails-style-guide]: https://github.com/bbatsov/rails-style-guide
-[pickaxe]: http://pragprog.com/book/ruby4/programming-ruby-1-9-2-0
+[pickaxe]: https://pragprog.com/book/ruby4/programming-ruby-1-9-2-0
 [trpl]: http://www.amazon.com/Ruby-Programming-Language-David-Flanagan/dp/0596516177
-[transmuter]: https://github.com/TechnoGate/transmuter
+[transmuter]: https://github.com/kalbasit/transmuter
 [RuboCop]: https://github.com/bbatsov/rubocop
