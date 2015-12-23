@@ -2089,7 +2089,7 @@
 <sup>[[link](#english-comments)]</sup>
 
 * <a name="hash-space"></a>
-  `#`뒤에 한 칸 뛰고 주석 내용을 작성한다.
+  `#`뒤에 한 칸 띄고 주석 내용을 작성한다.
 <sup>[[link](#hash-space)]</sup>
 
 * <a name="english-syntax"></a>
