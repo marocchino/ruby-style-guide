@@ -35,7 +35,7 @@
 
 이 모든 규칙들이 갑자기 제시되지는 않았다. 이것들 대부분이 내 전문분야인
 소프트웨어 엔지니어로서의 수많은 경험, 루비 커뮤니티원의 제안, 또한 높은 평가를
-받고 있는 프로그래밍 리소스인 ["Programming Ruby 1.9"][pickaxe]와
+받고 있는 프로그래밍 리소스인 ["Programming Ruby"][pickaxe]와
 ["The Ruby Programming Language"][trpl]를 기반으로 하였다.
 
 특정 스타일에 대해서 루비 커뮤니티의 명백한 합의를 얻지 못한 부분도 있다.(문자열
@@ -683,31 +683,40 @@
   first, second = multi_return
 
   # 좋은 예 - 스플랫과 함께 사용
-  first, *list = [1,2,3,4]
+  first, *list = [1, 2, 3, 4]
 
-  hello_array = *"Hello"
+  hello_array = *'Hello'
 
   a = *(1..3)
   ```
 
 * <a name="trailing-underscore-variables"></a>
-  병렬 대입할 때 불필요한 뒤의 밑줄 변수를 피하라. 뒤의 밑줄 변수는 대입의
-  왼쪽에 스프렛 변수가 정의 되고 스프렛 변수가 밑줄이 아닐 때만 필요하다.
+  병렬 대입할 때 불필요한 뒤의 밑줄 변수를 피하라. 이름 있는 밑줄 변수는
+  문맥을 읽는데 도움이 되기 떄문에 밑줄 변수보다 권장된다.  뒤의 밑줄 변수는
+  대입의 왼쪽에 스프렛 변수가 정의 되고 스프렛 변수가 밑줄이 아닐 때만 필요하다.
 <sup>[[link]](#trailing-underscore-variables)</sup>
 
   ```Ruby
   # 나쁜 예
-  a, b, _ = *foo
-  a, _, _ = *foo
-  a, *_ = *foo
+  foo = 'one,two,three,four,five'
+  # 유용한 정보가 아닌 불필요한 대입
+  first, second, _ = foo.split(',')
+  first, _, _ = foo.split(',')
+  first, *_ = foo.split(',')
 
   # 좋은 예
-  *a, _ = *foo
-  *a, b, _ = *foo
-  a, = *foo
-  a, b, = *foo
-  a, _b = *foo
-  a, _b, = *foo
+  foo = 'one,two,three,four,five'
+  # 밑줄 변수는 마지막 밑줄 요소를 재외한 전 요소를 가져오고 싶다는걸 보여주기
+  # 위해 필요하다.
+  *beginning, _ = foo.split(',')
+  *beginning, something, _ = foo.split(',')
+
+  a, = foo.split(',')
+  a, b, = foo.split(',')
+  # 사용하지 않는 변수에 불필요한 대입이지만, 유용한 정보를 제공한다.
+  first, _second = foo.split(',')
+  first, _second, = foo.split(',')
+  first, *_ending = foo.split(',')
   ```
 
 * <a name="no-for-loops"></a>
@@ -847,7 +856,7 @@
 <sup>[[link](#bang-not-not)]</sup>
 
   ```Ruby
-  # 나쁜 예 - 연산자 우선순위에 의해 괄호가 요구됨
+  # 나쁜 예 - 연산자 우선순위에 의해 소괄호가 요구됨
   x = (not something)
 
   # 좋은 예
@@ -1373,7 +1382,7 @@
   # 나쁜 예
   name = 'Bozhidar' unless name
 
-  # 좋은 예 - name이 nil이나 false가 아니면 Bozhidar로 초기화한다.
+  # 좋은 예 - name이 nil이나 false가 아니면 'Bozhidar'로 초기화한다.
   name ||= 'Bozhidar'
   ```
 
@@ -1440,11 +1449,11 @@
 
   ```Ruby
   # 나쁜 예 - eql?은 문자열에서는 ==와 같음
-  "ruby".eql? some_str
+  'ruby'.eql? some_str
 
   # 좋은 예
-  "ruby" == some_str
-  1.0.eql? x # eql? makes sense here if want to differentiate between Fixnum and Float 1
+  'ruby' == some_str
+  1.0.eql? x # Fixnum과 Float 1의 식별하기 위해 eql?을 사용하는 것은 괜찮다.
   ```
 
 * <a name="no-cryptic-perlisms"></a>
@@ -2426,7 +2435,7 @@
   # 더 좋은 예
   Person = Struct.new(:first_name, :last_name) do
   end
-  ````
+  ```
 
 * <a name="no-extend-struct-new"></a>
   `Struct.new`에 의해 초기화된 인스턴스를 확장하지 않는다. `Struct.new`를
@@ -2441,7 +2450,7 @@
 
   # 좋은 예
   Person = Struct.new(:first_name, :last_name)
-  ````
+  ```
 
 * <a name="factory-methods"></a>
   어떤 클래스의 인스턴스를 생성할 때 좀 더 명확한 방법을 제공하는 팩토리
@@ -2513,7 +2522,7 @@
     @@class_var = 'child'
   end
 
-  Parent.print_class_var # => "child"가 출력된다.
+  Parent.print_class_var # => 'child'가 출력된다.
   ```
 
   상속 계층에 있는 모든 클래스는 하나의 클래스 변수를 공유한다. 클래스
@@ -2645,46 +2654,44 @@
 
 ## 예외
 
-* <a name="fail-method"></a>
-  예외를 발생시킬 때는 `fail` 메소드를 사용한다. 예외를 잡고 다시 예외를
-  발생시키는 경우에만 `raise`를 사용한다.(왜냐하면 여기에서는 실패한 것이
-  아니고 명시적으로 예외를 발생시키는 것이기 때문이다.)
-<sup>[[link](#fail-method)]</sup>
+* <a name="prefer-raise-over-fail"></a>
+  예외를 발생 시킬때 `fail`대신 `raise`를 사용한다.
+  <sup>[[link](#prefer-raise-over-fail)]</sup>
 
   ```Ruby
-  begin
-    fail 'Oops'
-  rescue => error
-    raise if error.message != 'Oops'
-  end
+  # 나쁜 예
+  fail SomeException, 'message'
+
+  # 좋은 예
+  raise SomeException, 'message'
   ```
 
 * <a name="no-explicit-runtimeerror"></a>
-  `fail/raise`를 사용할 때 `RuntimeError`를 첫 번째 인수로 하는 메소드는 사용하지
+  `raise`를 사용할 때 `RuntimeError`를 첫 번째 인수로 하는 메소드는 사용하지
   않는다.
 <sup>[[link](#no-explicit-runtimeerror)]</sup>
 
   ```Ruby
   # 나쁜 예
-  fail RuntimeError, 'message'
+  raise RuntimeError, 'message'
 
   # 좋은 예 - 기본적으로 RuntimeError가 발생한다.
-  fail 'message'
+  raise 'message'
   ```
 
 * <a name="exception-class-messages"></a>
-  예외 인스턴스를 생성해서 `fail/raise`를 하는 것보다 `fail/raise`의 첫 번째
+  예외 인스턴스를 생성해서 `raise`를 하는 것보다 `raise`의 첫 번째
   인수에 예외 클래스를 넘기는 메소드를 사용하는 것이 더 좋다.
 <sup>[[link](#exception-class-messages)]</sup>
 
   ```Ruby
   # 나쁜 예
-  fail SomeException.new('message')
-  # `fail SomeException.new('message'), backtrace` 이렇게 쓸 수 는 없다.
+  raise SomeException.new('message')
+  # `raise SomeException.new('message'), backtrace` 이렇게 쓸 수 는 없다.
 
   # 좋은 예
-  fail SomeException, 'message'
-  # `fail SomeException, 'message', backtrace` 일관성 있는 방법이다.
+  raise SomeException, 'message'
+  # `raise SomeException, 'message', backtrace`와 일관성이 있다.
   ```
 
 * <a name="no-return-ensure"></a>
@@ -2694,7 +2701,7 @@
 
   ```Ruby
   def foo
-    fail
+    raise
   ensure
     return '매우 안좋은 생각'
   end
@@ -3047,7 +3054,7 @@
   ```Ruby
   heroes = { batman: 'Bruce Wayne', superman: 'Clark Kent' }
   # 나쁜 예 - 만약 실수가 있다고 한다면 알아채지 못할 수 있다.
-  heroes[:batman] # => "Bruce Wayne"
+  heroes[:batman] # => 'Bruce Wayne'
   heroes[:supermann] # => nil
 
   # 좋은 예 - 문제를 명확하게 하기 위해서 KeyError 예외가 발생한다.
@@ -3141,9 +3148,9 @@
 
 ## 문자열
 
-* <a name="string-interpolation"></a>
+* <a name="pad-string-interpolation"></a>
   문자열을 합치는 것보다 포맷팅이나 문자열 삽입을 사용하는 것이 더 좋다.
-<sup>[[link](#string-interpolation)]</sup>
+<sup>[[link](#pad-string-interpolation)]</sup>
 
   ```Ruby
   # 나쁜 예
@@ -3288,12 +3295,12 @@
     str = 'lisp-case-rules'
 
     # 나쁜 예
-    url.gsub("http://", "https://")
-    str.gsub("-", "_")
+    url.gsub('http://', 'https://')
+    str.gsub('-', '_')
 
     # 좋은 예
-    url.sub("http://", "https://")
-    str.tr("-", "_")
+    url.sub('http://', 'https://')
+    str.tr('-', '_')
     ```
 
 * <a name="heredocs"></a>
@@ -3519,13 +3526,14 @@
 
 * <a name="block-class-eval"></a>
   `class_eval` 폼 블록은 문자열 삽입 폼보다 더 좋다.
-  - 문자열 삽입 폼을 사용할 때는 백트레이스를 위해서 항상 `__FILE__`과
-    `__LINE__`을 써야 한다.
 <sup>[[link](#block-class-eval)]</sup>
 
-  ```ruby
-  class_eval 'def use_relative_model_naming?; true; end', __FILE__, __LINE__
-  ```
+  - 문자열 삽입 폼을 사용할 때는 백트레이스를 위해서 항상 `__FILE__`과
+    `__LINE__`을 써야 한다.
+
+    ```ruby
+    class_eval 'def use_relative_model_naming?; true; end', __FILE__, __LINE__
+    ```
 
   - `define_method`가 `class_eval{ def ... }`보다 좋다.
 
