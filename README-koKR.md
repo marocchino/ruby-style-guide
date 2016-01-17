@@ -3047,6 +3047,23 @@
   hash.value?(value)
   ```
 
+* <a name="hash-each"></a>
+  `Hash#keys.each` 대신 `Hash#each_key`를, `Hash#values.each` 대신
+  `Hash#each_value`를 사용하라.
+<sup>[[link](#hash-each)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  hash.keys.each { |k| p k }
+  hash.values.each { |v| p v }
+  hash.each { |k, _v| p k }
+  hash.each { |_k, v| p v }
+
+  # 좋은 예
+  hash.each_key { |k| p k }
+  hash.each_value { |v| p v }
+  ```
+
 * <a name="hash-fetch"></a>
   해시 키로 명확히 있어야 하는 값을 다룰 때에는 `Hash#fetch`를 사용하라.
 <sup>[[link](#hash-fetch)]</sup>
@@ -3316,6 +3333,36 @@
     |end
   END
   # => "def test\n  some_method\n  other_method\nend\n"
+  ```
+
+* <a name="squiggly-heredocs"></a>
+  루비 2.3의 물결표 히어독은 여러 줄의 문자열의 들여쓰기에 좋다.
+<sup>[[link](#squiggly-heredocs)]</sup>
+
+  ```Ruby
+  # 나쁜 예 - Powerpack String#strip_margin 사용
+  code = <<-END.strip_margin('|')
+    |def test
+    |  some_method
+    |  other_method
+    |end
+  END
+
+  # 나쁜 예
+  code = <<-END
+  def test
+    some_method
+    other_method
+  end
+  END
+
+  # 좋은 예
+  code = <<~END
+    def test
+      some_method
+      other_method
+    end
+  END
   ```
 
 ## 정규식
