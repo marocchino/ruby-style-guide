@@ -2046,8 +2046,8 @@
 <sup>[[link](#bool-methods-qmark)]</sup>
 
 * <a name="bool-methods-prefix"></a>
-  단정 메소드에 `is`, `does`, `can`같은 보조 전치사를 붙이는 것을 피하라.
-  이런 단어는 장황할 뿐만 아니라 `empty?`, `include?`같은 루비 핵심 라이브러리의
+  단정 메소드에 `is`, `does`, `can` 같은 보조 전치사를 붙이는 것을 피하라.
+  이런 단어는 장황할 뿐만 아니라 `empty?`, `include?` 같은 루비 핵심 라이브러리의
   이진 메소드의 스타일과 다르기도 하다.
 <sup>[[link](#bool-methods-prefix)]</sup>
 
@@ -2675,7 +2675,7 @@
   end
   ```
 
-  `alias`가 `def`같은 키워드이기 때문에, 심볼이나 문자열 대신, 생 인자를
+  `alias`가 `def` 같은 키워드이기 때문에, 심볼이나 문자열 대신, 생 인자를
   사용한다. 다시 말하면, `alias :foo :bar`대신 `alias foo bar`를 사용한다.
 
   또 루비가 어떻게 alias와 상속을 처리하는지 알아야한다: alias는
