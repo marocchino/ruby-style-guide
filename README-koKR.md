@@ -214,7 +214,7 @@
   ```
 
 * <a name="spaces-braces"></a>
-  `(`, `[`의 뒤, `]`, `)`의 앞에 공백을 쓰지마라.
+  `(`, `[`의 뒤, `]`, `)`의 앞에 공백을 쓰지 마라.
   `{`의 주변과 `}`의 앞에 공백을 써라.
 <sup>[[link](#spaces-braces)]</sup>
 
@@ -245,7 +245,7 @@
   {one: 1, two: 2}
   ```
 
-  보간 표현식에서는 괄호안에 패딩 공백이 없어야 한다.
+  보간 표현식에서는 괄호 안에 패딩 공백이 없어야 한다.
 
   ```Ruby
   # 나쁜 예
@@ -695,7 +695,7 @@
   first, second = multi_return
 
   # 좋은 예 - 스플랫과 함께 사용
-  first, *list = [1, 2, 3, 4]  # first => 1, list => [2, 3, 4]
+  first, *list = [1, 2, 3, 4] # first => 1, list => [2, 3, 4]
 
   hello_array = *'Hello' # => ["Hello"]
 
@@ -1353,7 +1353,7 @@
   ```
 
 * <a name="safe-assignment-in-condition"></a>
-  배정문이 괄호안에 싸인 경우를 제외하고는, 조건식에서 `=`(배정 연산자)를 써서
+  배정문이 괄호 안에 싸인 경우를 제외하고는, 조건식에서 `=`(배정 연산자)를 써서
   값을 반환하지 마라. 이것은 *조건문에서 안전하게 대입하기*라 불리는 루비 사용자
   사이에서는 상당히 유명한 관용 표현이다.
 <sup>[[link](#safe-assignment-in-condition)]</sup>
@@ -1732,7 +1732,7 @@
   paths = [paths] unless paths.is_a? Array
   paths.each { |path| do_something(path) }
 
-  # 나쁜 예(항상 새로운 배열 인스턴스를 만듬)
+  # 나쁜 예(항상 새로운 배열 인스턴스를 만듦)
   [*paths].each { |path| do_something(path) }
 
   # 좋은 예(좀 더 가독성이 높은)
