@@ -1362,20 +1362,20 @@
   # 나쁜 예(+ 주의)
   if v = array.grep(/foo/)
     do_something(v)
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예(MRI would still complain, but RuboCop won't)
   if (v = array.grep(/foo/))
     do_something(v)
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예
   v = array.grep(/foo/)
   if v
     do_something(v)
-    # 나머지 코드
+    # 생략
   end
   ```
 
@@ -1650,7 +1650,7 @@
 
   def something(x)
     unused_var, used_var = something_else(x)
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예
@@ -1658,7 +1658,7 @@
 
   def something(x)
     _unused_var, used_var = something_else(x)
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예
@@ -1666,7 +1666,7 @@
 
   def something(x)
     _, used_var = something_else(x)
-    # 나머지 코드
+    # 생략
   end
   ```
 
@@ -1724,7 +1724,7 @@
 
 * <a name="array-coercion"></a>
   변수가 배열인지 모르겠지만 그것을 Array로 취급하고 싶을 때에는 명시적인 `Array`
-  체크나 `[*var]` 대신에`Array()`를 사용하라.
+  체크나 `[*var]` 대신에 `Array()`를 사용하라.
 <sup>[[link](#array-coercion)]</sup>
 
   ```Ruby
@@ -1960,18 +1960,18 @@
   someVar = 5
 
   def someMethod
-    # 나머지 코드
+    # 생략
   end
 
   def SomeMethod
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예
   :some_symbol
 
   def some_method
-    # 나머지 코드
+    # 생략
   end
   ```
 
@@ -1983,32 +1983,32 @@
   ```Ruby
   # 나쁜 예
   class Someclass
-    # 나머지 코드
+    # 생략
   end
 
   class Some_Class
-    # 나머지 코드
+    # 생략
   end
 
   class SomeXml
-    # 나머지 코드
+    # 생략
   end
 
   class XmlSomething
-    # 나머지 코드
+    # 생략
   end
 
   # 좋은 예
   class SomeClass
-    # 나머지 코드
+    # 생략
   end
 
   class SomeXML
-    # 나머지 코드
+    # 생략
   end
 
   class XMLSomething
-    # 나머지 코드
+    # 생략
   end
   ```
 
@@ -2047,7 +2047,7 @@
 
 * <a name="bool-methods-prefix"></a>
   단정 메소드에 `is`, `does`, `can`같은 보조 전치사를 붙이는 것을 피하라.
-  이런 단어는 장황할 뿐만 아니라 `empty?`, `include?`같은 루비 햇심 라이브러리의
+  이런 단어는 장황할 뿐만 아니라 `empty?`, `include?`같은 루비 핵심 라이브러리의
   이진 메소드의 스타일과 다르기도 하다.
 <sup>[[link](#bool-methods-prefix)]</sup>
 
@@ -2613,17 +2613,17 @@
   ```Ruby
   class SomeClass
     def public_method
-      # 나머지 코드
+      # 생략
     end
 
     private
 
     def private_method
-      # 나머지 코드
+      # 생략
     end
 
     def another_private_method
-      # 나머지 코드
+      # 생략
     end
   end
   ```
@@ -3237,7 +3237,7 @@
 ## 숫자
 
 * <a name="integer-type-checking"></a>
-  정수의 타입 확인에 `Integer`를 사용하라. `Fixnum`은 플렛폼 의존적이기 때문에
+  정수의 타입 확인에 `Integer`를 사용하라. `Fixnum`은 플랫폼 의존적이기 때문에
   이걸로 확인하면 32 비트와 64 비트 기기에서 다른 결과를 반환한다.
 <sup>[[link](#integer-type-checking)]</sup>
 
@@ -3481,7 +3481,7 @@
 
   ```Ruby
   /(regexp)/ =~ string
-  # 나머지 코드
+  # 생략
 
   # 나쁜 예
   process $1
@@ -3498,12 +3498,12 @@
   ```Ruby
   # 나쁜 예
   /(regexp)/ =~ string
-  # 나머지 코드
+  # 생략
   process Regexp.last_match(1)
 
   # 좋은 예
   /(?<meaningful_var>regexp)/ =~ string
-  # 나머지 코드
+  # 생략
   process meaningful_var
   ```
 
@@ -3737,15 +3737,15 @@
     private
 
     def reset_token
-      # 나머지 코드
+      # 생략
     end
 
     def create_token
-      # 나머지 코드
+      # 생략
     end
 
     def activate!
-      # 나머지 코드
+      # 생략
     end
   end
 
