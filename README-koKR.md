@@ -49,7 +49,7 @@
 많은 프로젝트가 (대개 여기서 유래된) 그들만의 코딩 스타일 가이드 라인을 가진다.
 상충하는 부분이 있을 경우, 그 프로젝트에선 프로젝트의 가이드 라인을 우선하라.
 
-이 가이드는 [Transmuter][]를 통해 PDF나 HTML로 복사해갈 수 있다.
+이 가이드는 [Pandoc][]를 통해 PDF나 HTML로 복사해갈 수 있다.
 
 [RuboCop][]은 이 스타일 가이드에 기반한 코드 분석기다.
 
@@ -76,6 +76,7 @@
 * [클래스와 모듈](#클래스와-모듈)
 * [예외](#예외)
 * [컬렉션](#컬렉션)
+* [숫자](#숫자)
 * [문자열](#문자열)
 * [정규식](#정규식)
 * [퍼센트 리터럴](#퍼센트-리터럴)
@@ -191,15 +192,14 @@
   ```
 
 * <a name="spaces-operators"></a>
-  연산자 전후, 콤마 뒤, 콜론과 세미콜론 뒤, `{`, `}`의 전후에 공백(space)을
-  써라. 공백은 루비 인터프리터에는 (대부분의 경우) 중요하지 않지만 적절하게
-  사용하면 읽기 쉬운 코드를 작성할 수 있다.
+  연산자 전후, 콤마 뒤, 콜론과 세미콜론 뒤에 공백(space)을 써라.
+  공백은 루비 인터프리터에는 (대부분의 경우) 중요하지 않지만 적절하게 사용하면
+  읽기 쉬운 코드를 작성할 수 있다.
 <sup>[[link](#spaces-operators)]</sup>
 
   ```Ruby
   sum = 1 + 2
   a, b = 1, 2
-  [1, 2, 3].each { |e| puts e }
   class FooError < StandardError; end
   ```
 
@@ -212,10 +212,30 @@
   # 좋은 예
   e = M * c**2
   ```
+
+* <a name="spaces-braces"></a>
+  `(`, `[`의 뒤, `]`, `)`의 앞에 공백을 쓰지 마라.
+  `{`의 주변과 `}`의 앞에 공백을 써라.
+<sup>[[link](#spaces-braces)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  some( arg ).other
+  [ 1, 2, 3 ].each{|e| puts e}
+
+  # 좋은 예
+  some(arg).other
+  [1, 2, 3].each { |e| puts e }
+  ```
+
   `{`, `}` 전후의 공백은 구문을 명확하게 하기 위해 쓸 만한데, 그 이유는
   문자열 보간법(string interpolation)을 사용할 때뿐만 아니라 블록이나
-  해시문에 사용될 수 있기 때문이다. 해시문에서는 다음 두 가지 스타일이
-  허용된다.
+  해시문에 사용될 수 있기 때문이다.
+
+  해시문에서는 다음 두 가지 스타일이 허용된다.
+  첫 번째 방법이 조금 더 읽기 좋다.(그리고 루비 커뮤니티에서 확실히 더 인기가
+  있다.) 두 번째 방법은 블록과 해시를 시각적으로 구별화 수 있는 장점이 있다.
+  무엇이든 하나를 선택하면, 일관적으로 적용하자.
 
   ```Ruby
   # 좋은 예 - {뒤와 }앞에 공백
@@ -225,22 +245,14 @@
   {one: 1, two: 2}
   ```
 
-  첫 번째 방법이 조금 더 읽기 좋다.(그리고 루비 커뮤니티에서 확실히 더 인기가
-  있다.) 두 번째 방법은 블록과 해시를 시각적으로 구별화 수 있는 장점이 있다.
-  무엇이든 하나를 선택하면, 일관적으로 적용하자.
-
-* <a name="no-spaces-braces"></a>
-  `(`, `[`뒤 또는 `]`, `)` 앞에 공백을 넣지 않는다.
-<sup>[[link](#no-spaces-braces)]</sup>
+  보간 표현식에서는 괄호 안에 패딩 공백이 없어야 한다.
 
   ```Ruby
   # 나쁜 예
-  some( arg ).other
-  [ 1, 2, 3 ].size
+  "From: #{ user.first_name }, #{ user.last_name }"
 
   # 좋은 예
-  some(arg).other
-  [1, 2, 3].size
+  "From: #{user.first_name}, #{user.last_name}"
   ```
 
 * <a name="no-space-bang"></a>
@@ -544,7 +556,7 @@
   ```
 
 * <a name="rdoc-conventions"></a>
-  RDoc과 API 문서의 컨벤션을 이용하라.
+  [Rdoc][rdoc]과 API 문서의 컨벤션을 이용하라.
   `def`와 명령 블록 사이에 빈 줄을 넣지 마라.
 <sup>[[link](#rdoc-conventions)]</sup>
 
@@ -644,9 +656,9 @@
     puts "#{a}, #{b}, #{c}, #{d}"
   end
 
-  some_method('w', 'x') # => 'w, x, 1, 2'
-  some_method('w', 'x', 'y') # => 'w, x, y, 2'
-  some_method('w', 'x', 'y', 'z') # => 'w, x, y, z'
+  some_method('w', 'x') # => '1, 2, w, x'
+  some_method('w', 'x', 'y') # => 'y, 2, w, x'
+  some_method('w', 'x', 'y', 'z') # => 'y, z, w, x'
   ```
 
 * <a name="parallel-assignment"></a>
@@ -683,11 +695,11 @@
   first, second = multi_return
 
   # 좋은 예 - 스플랫과 함께 사용
-  first, *list = [1, 2, 3, 4]
+  first, *list = [1, 2, 3, 4] # first => 1, list => [2, 3, 4]
 
-  hello_array = *'Hello'
+  hello_array = *'Hello' # => ["Hello"]
 
-  a = *(1..3)
+  a = *(1..3) # => [1, 2, 3]
   ```
 
 * <a name="trailing-underscore-variables"></a>
@@ -1118,20 +1130,38 @@
 
   ```Ruby
   class Person
+    # 나쁜 예
+    attr_reader(:name, :age)
+    # 좋은 예
     attr_reader :name, :age
 
-    # omitted
+    # 내용 생략
   end
 
+  # 나쁜 예
+  temperance = Person.new 'Temperance', 30
+  # 좋은 예
   temperance = Person.new('Temperance', 30)
-  temperance.name
 
+  # 나쁜 예
+  puts(temperance.age)
+  # 좋은 예
   puts temperance.age
 
+  # 나쁜 예
+  x = Math.sin y
+  # 좋은 예
   x = Math.sin(y)
+
+  # 나쁜 예
+  array.delete e
+  # 좋은 예
   array.delete(e)
 
-  bowling.score.should == 0
+  # 나쁜 예
+  expect(bowling.score).to eq 0
+  # 좋은 예
+  expect(bowling.score).to eq(0)
   ```
 
 * <a name="no-braces-opts-hash"></a>
@@ -1323,7 +1353,7 @@
   ```
 
 * <a name="safe-assignment-in-condition"></a>
-  배정문이 괄호안에 싸인 경우를 제외하고는, 조건식에서 `=`(배정 연산자)를 써서
+  배정문이 괄호 안에 싸인 경우를 제외하고는, 조건식에서 `=`(배정 연산자)를 써서
   값을 반환하지 마라. 이것은 *조건문에서 안전하게 대입하기*라 불리는 루비 사용자
   사이에서는 상당히 유명한 관용 표현이다.
 <sup>[[link](#safe-assignment-in-condition)]</sup>
@@ -1332,20 +1362,20 @@
   # 나쁜 예(+ 주의)
   if v = array.grep(/foo/)
     do_something(v)
-    ...
+    # 생략
   end
 
   # 좋은 예(MRI would still complain, but RuboCop won't)
   if (v = array.grep(/foo/))
     do_something(v)
-    ...
+    # 생략
   end
 
   # 좋은 예
   v = array.grep(/foo/)
   if v
     do_something(v)
-    ...
+    # 생략
   end
   ```
 
@@ -1453,7 +1483,7 @@
 
   # 좋은 예
   'ruby' == some_str
-  1.0.eql? x # Fixnum과 Float 1의 식별하기 위해 eql?을 사용하는 것은 괜찮다.
+  1.0.eql? x # Integer와 Float 1의 식별하기 위해 eql?을 사용하는 것은 괜찮다.
   ```
 
 * <a name="no-cryptic-perlisms"></a>
@@ -1620,7 +1650,7 @@
 
   def something(x)
     unused_var, used_var = something_else(x)
-    # ...
+    # 생략
   end
 
   # 좋은 예
@@ -1628,7 +1658,7 @@
 
   def something(x)
     _unused_var, used_var = something_else(x)
-    # ...
+    # 생략
   end
 
   # 좋은 예
@@ -1636,7 +1666,7 @@
 
   def something(x)
     _, used_var = something_else(x)
-    # ...
+    # 생략
   end
   ```
 
@@ -1692,17 +1722,17 @@
   # => 'one, two, three'
   ```
 
-* <a name="splat-arrays"></a>
+* <a name="array-coercion"></a>
   변수가 배열인지 모르겠지만 그것을 Array로 취급하고 싶을 때에는 명시적인 `Array`
-  체크 대신에 `[*var]` 또는 `Array()`를 사용하라.
-<sup>[[link](#splat-arrays)]</sup>
+  체크나 `[*var]` 대신에 `Array()`를 사용하라.
+<sup>[[link](#array-coercion)]</sup>
 
   ```Ruby
   # 나쁜 예
   paths = [paths] unless paths.is_a? Array
   paths.each { |path| do_something(path) }
 
-  # 좋은 예
+  # 나쁜 예(항상 새로운 배열 인스턴스를 만듦)
   [*paths].each { |path| do_something(path) }
 
   # 좋은 예(좀 더 가독성이 높은)
@@ -1930,18 +1960,18 @@
   someVar = 5
 
   def someMethod
-    ...
+    # 생략
   end
 
   def SomeMethod
-   ...
+    # 생략
   end
 
   # 좋은 예
   :some_symbol
 
   def some_method
-    ...
+    # 생략
   end
   ```
 
@@ -1953,32 +1983,32 @@
   ```Ruby
   # 나쁜 예
   class Someclass
-    ...
+    # 생략
   end
 
   class Some_Class
-    ...
+    # 생략
   end
 
   class SomeXml
-    ...
+    # 생략
   end
 
   class XmlSomething
-    ...
+    # 생략
   end
 
   # 좋은 예
   class SomeClass
-    ...
+    # 생략
   end
 
   class SomeXML
-    ...
+    # 생략
   end
 
   class XMLSomething
-    ...
+    # 생략
   end
   ```
 
@@ -2014,6 +2044,44 @@
   (예를 들어 `Array#empty?`) 메소드가 boolean 값을 반환하는게 아니라면, 물음표로
   끝나선 안 된다.
 <sup>[[link](#bool-methods-qmark)]</sup>
+
+* <a name="bool-methods-prefix"></a>
+  단정 메소드에 `is`, `does`, `can` 같은 보조 전치사를 붙이는 것을 피하라.
+  이런 단어는 장황할 뿐만 아니라 `empty?`, `include?` 같은 루비 핵심 라이브러리의
+  이진 메소드의 스타일과 다르기도 하다.
+<sup>[[link](#bool-methods-prefix)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  class Person
+    def is_tall?
+      true
+    end
+
+    def can_play_basketball?
+      false
+    end
+
+    def does_like_candy?
+      true
+    end
+  end
+
+  # 좋은 예
+  class Person
+    def tall?
+      true
+    end
+
+    def basketball_player?
+      false
+    end
+
+    def likes_candy?
+      true
+    end
+  end
+  ```
 
 * <a name="dangerous-method-bang"></a>
   잠재적으로 *위험한* 메소드의(예를 들어, `self`나 인수를 수정하는 메소드와
@@ -2289,10 +2357,11 @@
   # 나쁜 예
   class SomeClass
     def self.some_method
-      # body 생략
+      # 내용 생략
     end
 
     def self.some_other_method
+      # 내용 생략
     end
   end
 
@@ -2301,10 +2370,11 @@
     module_function
 
     def some_method
-      # body 생략
+      # 내용 생략
     end
 
     def some_other_method
+      # 내용 생략
     end
   end
   ```
@@ -2543,17 +2613,17 @@
   ```Ruby
   class SomeClass
     def public_method
-      # ...
+      # 생략
     end
 
     private
 
     def private_method
-      # ...
+      # 생략
     end
 
     def another_private_method
-      # ...
+      # 생략
     end
   end
   ```
@@ -2605,7 +2675,7 @@
   end
   ```
 
-  `alias`가 `def`같은 키워드이기 때문에, 심볼이나 문자열 대신, 생 인자를
+  `alias`가 `def` 같은 키워드이기 때문에, 심볼이나 문자열 대신, 생 인자를
   사용한다. 다시 말하면, `alias :foo :bar`대신 `alias foo bar`를 사용한다.
 
   또 루비가 어떻게 alias와 상속을 처리하는지 알아야한다: alias는
@@ -2700,6 +2770,7 @@
 <sup>[[link](#no-return-ensure)]</sup>
 
   ```Ruby
+  # 나쁜 예
   def foo
     raise
   ensure
@@ -2894,12 +2965,12 @@
   ```Ruby
   # 나쁜 예 - 파일 서술자를 명시적으로 닫아야 함
   f = File.open('testfile')
-    # ...
+  # 파일 처리 작업
   f.close
 
   # 좋은 예 - 파일 서술자가 자동으로 닫힘
   File.open('testfile') do |f|
-    # ...
+    # 파일 처리 작업
   end
   ```
 
@@ -3163,6 +3234,24 @@
   end
   ```
 
+## 숫자
+
+* <a name="integer-type-checking"></a>
+  정수의 타입 확인에 `Integer`를 사용하라. `Fixnum`은 플랫폼 의존적이기 때문에
+  이걸로 확인하면 32 비트와 64 비트 기기에서 다른 결과를 반환한다.
+<sup>[[link](#integer-type-checking)]</sup>
+
+  ```Ruby
+  timestamp = Time.now.to_i
+
+  # 나쁜 예
+  timestamp.is_a? Fixnum
+  timestamp.is_a? Bignum
+
+  # 좋은 예
+  timestamp.is_a? Integer
+  ```
+
 ## 문자열
 
 * <a name="pad-string-interpolation"></a>
@@ -3179,18 +3268,6 @@
   # 좋은 예
   email_with_name = format('%s <%s>', user.name, user.email)
   ```
-
-* <a name="string-interpolation"></a>
-  보간 표현식에서, 괄호 양 옆에 스페이스를 넣지 않는 것이 좋다.
-
-  ```Ruby
-  # 나쁜 예
-  "From: #{ user.first_name }, #{ user.last_name }"
-
-  # 좋은 예
-  "From: #{user.first_name}, #{user.last_name}"
-  ```
-<sup>[[link](#string-interpolation)]</sup>
 
 * <a name="consistent-string-literals"></a>
   일관된 문자열 따옴표 스타일을 선택한다. 루비 커뮤니티에는 많이 사용하는 두 가지
@@ -3404,7 +3481,7 @@
 
   ```Ruby
   /(regexp)/ =~ string
-  ...
+  # 생략
 
   # 나쁜 예
   process $1
@@ -3421,12 +3498,12 @@
   ```Ruby
   # 나쁜 예
   /(regexp)/ =~ string
-  ...
+  # 생략
   process Regexp.last_match(1)
 
   # 좋은 예
   /(?<meaningful_var>regexp)/ =~ string
-  ...
+  # 생략
   process meaningful_var
   ```
 
@@ -3660,15 +3737,15 @@
     private
 
     def reset_token
-      ...
+      # 생략
     end
 
     def create_token
-      ...
+      # 생략
     end
 
     def activate!
-      ...
+      # 생략
     end
   end
 
@@ -3832,5 +3909,6 @@
 [rails-style-guide]: https://github.com/bbatsov/rails-style-guide
 [pickaxe]: https://pragprog.com/book/ruby4/programming-ruby-1-9-2-0
 [trpl]: http://www.amazon.com/Ruby-Programming-Language-David-Flanagan/dp/0596516177
-[transmuter]: https://github.com/kalbasit/transmuter
+[Pandoc]: http://pandoc.org/
 [RuboCop]: https://github.com/bbatsov/rubocop
+[rdoc]: http://rdoc.sourceforge.net/doc/
