@@ -970,7 +970,7 @@
 
   `!!`는 값을 boolean으로 만들지만, 제어 구문의 조건문에서 명시적으로 변환할
   필요는 없으며 의도를 불명확하게 만들 뿐이다. `nil` 검사를 하고 싶다면 `nil?`을
-  사용해라.
+  사용하라.
 
   ```Ruby
   # 나쁜 예
@@ -2211,11 +2211,11 @@
 <sup>[[link](#comment-upkeep)]</sup>
 
 > 좋은 주석은 좋은 유머와 같다. 설명이 필요없다. <br>
-> &mdash; old programmers maxim, [Russ Olsen](http://eloquentruby.com/blog/2011/03/07/good-code-and-good-jokes/)
+> &mdash; 오래된 프로그래머 격언, [Russ Olsen](http://eloquentruby.com/blog/2011/03/07/good-code-and-good-jokes/)
 
 * <a name="refactor-dont-comment"></a>
   나쁜 코드에 대해서 주석을 달지 마라. 코드가 스스로 설명할 수 있도록 리펙토링
-  하라.("하거나 안 하거나 둘 중 하나다. 노력했다는 것은 없다." Yoda)
+  하라.("한다, 안 한다가 있을 뿐이야. 해보는 건 없어." Yoda)
 <sup>[[link](#refactor-dont-comment)]</sup>
 
 ### 주석 어노테이션
@@ -3513,13 +3513,13 @@
   # 좋은 예 - 현재 시각을 위해 Time을 사용함
   Time.now
 
-  # 나쁜 예 - 현대 날짜를 위해 DateTime을 사용함
+  # 나쁜 예 - 그레고리력 날짜를 위해 DateTime을 사용함
   DateTime.iso8601('2016-06-29')
 
-  # 좋은 예 - 현대 날짜를 위해 Date를 사용함
+  # 좋은 예 - 그레고리력 날짜를 위해 Date를 사용함
   Date.iso8601('2016-06-29')
 
-  # 좋은 예 - 구시대의 날짜를 위해 DateTime을 start 인자와 함께 사용함
+  # 좋은 예 - 율리우스력 날짜를 위해 DateTime을 start 인자와 함께 사용함
   DateTime.iso8601('1751-04-23', Date::ENGLAND)
   ```
 
