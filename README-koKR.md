@@ -3,11 +3,11 @@
 > 롤 모델이 중요하다.<br>
 > -- Officer Alex J. Murphy / RoboCop
 
-나는 루비 개발자로서 항상 한 가지 문제로 괴로웠다. - 파이썬 개발자들은 훌륭한
-프로그래밍 스타일 가이드([PEP-8][])를 가지고 있는데, 우리에겐 코딩 스타일과
-모범 사례를 가진 공식적인 가이드가 전혀 없다는 것이다. 그리고 나는 그것이야말로
-문제라고 확신한다. 또한 루비의 훌륭한 해커 커뮤니티는 모두가 탐낼 만한 문서를
-만들어낼 능력이 있다고 확신한다.
+나는 루비 개발자로서 항상 한 가지 문제로 괴로웠다. &mdash; 파이썬 개발자들은
+훌륭한 프로그래밍 스타일 가이드([PEP-8][])를 가지고 있는데, 우리에겐 코딩
+스타일과 모범 사례를 가진 공식적인 가이드가 전혀 없다는 것이다. 그리고 나는
+그것이야말로 문제라고 확신한다. 또한 루비의 훌륭한 해커 커뮤니티는 모두가 탐낼
+만한 문서를 만들어낼 능력이 있다고 확신한다.
 
 이 가이드는 사내 루비 코딩 가이드 라인으로 시작됐다.
 그러나 몇몇 포인트에서 내가 작성한 가이드가 일반 루비 커뮤니티에도 도움이 되게끔
@@ -21,14 +21,14 @@
 통해 여타의 모든 루비 개발 관계자들에게 도움될 수 있으리라 본다.
 
 한 가지 더, 레일즈에 관심 있는 사람이라면, 추가적으로 필요한 부분은 [루비 온
-레일즈 스타일 가이드][rails-style-guide]를 참고하면 된다.
+레일스 스타일 가이드][rails-style-guide]를 참고하면 된다.
 
 # 루비 스타일 가이드
 
 이 루비 스타일 가이드는 다른 루비 개발자와 유지가능한 코드를 작성하는 모범사례를
-적용하는 것을 추천한다. 이 가이드가 실제 사용방법을 반영하기 때문에, 이상적으로
-만들어져서 적용이 위험하다고 느끼는 사람은 사용하지 않는 것이 좋다. &ndash;그게
-아무리 좋다고 해도 말이다.
+적용하는 것을 추천한다. 현실을 반영한 스타일 가이드는 사람들이 사용하지만,
+사람들이 거부하는 이상을 추구하는 스타일 가이드는 아무도 사용하지 않게 될 수
+있다. &mdash; 그게 아무리 좋다고 해도 말이다.
 
 이 가이드는 관련된 규칙에 따라 여러 부분으로 나뉘어 있다.(자명하다고 판단된
 것을 제외하고는)규칙을 적으며 근거를 덧붙이려 노력했다.
@@ -64,7 +64,7 @@
 * [Portuguese](https://github.com/rubensmabueno/ruby-style-guide/blob/master/README-PT-BR.md)
 * [Russian](https://github.com/arbox/ruby-style-guide/blob/master/README-ruRU.md)
 * [Spanish](https://github.com/alemohamad/ruby-style-guide/blob/master/README-esLA.md)
-* [Vietnamese](https://github.com/scrum2b/ruby-style-guide/blob/master/README-viVN.md)
+* [Vietnamese](https://github.com/CQBinh/ruby-style-guide/blob/master/README-viVN.md)
 
 ## Table of Contents
 
@@ -78,6 +78,7 @@
 * [컬렉션](#컬렉션)
 * [숫자](#숫자)
 * [문자열](#문자열)
+* [날짜 및 시간](#날짜-및-시간)
 * [정규식](#정규식)
 * [퍼센트 리터럴](#퍼센트-리터럴)
 * [메타프로그래밍](#메타프로그래밍)
@@ -113,8 +114,8 @@
   ```
 
 * <a name="crlf"></a>
-  Unix 스타일로 줄바꿈 하라.(*BSD/Solaris/Linux/OS X 사용자들은 기본으로 설정되어
-  있다. Windows 사용자에겐 특히 주의가 필요하다.)
+  Unix 스타일로 줄바꿈 하라.(\*BSD/Solaris/Linux/OS X 사용자들은 기본으로
+  설정되어 있다. Windows 사용자에겐 특히 주의가 필요하다.)
 <sup>[[link](#crlf)]</sup>
 
   * 만약 Git을 사용하고 있으면, 다음 설정을 추가함으로써 프로젝트가 Windows
@@ -555,6 +556,27 @@
   num = 1_000_000
   ```
 
+* <a name="numeric-literal-prefixes"></a>
+  숫자 접두사는 소문자를 사용한다. 8진법에는 `0o`를, 16진법에는 `0x`를,
+  2진법에는 `0b`를 사용한다. 10진법 숫자에 `0d` 접두사를 사용하지 않는다.
+<sup>[[link](#numeric-literal-prefixes)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  num = 01234
+  num = 0O1234
+  num = 00X12AB
+  num = 0B10101
+  num = 0D1234
+  num = 0d1234
+
+  # 좋은 예 - 숫자와 접두사를 구분하기 쉽다.
+  num = 0o1234
+  num = 0x12AB
+  num = 0b10101
+  num = 1234
+  ```
+
 * <a name="rdoc-conventions"></a>
   [Rdoc][rdoc]과 API 문서의 컨벤션을 이용하라.
   `def`와 명령 블록 사이에 빈 줄을 넣지 마라.
@@ -616,24 +638,91 @@
    ```Ruby
    # 나쁜 예
    def some_method()
-     # body omitted
+     # 내용 생략
    end
 
    # 좋은 예
    def some_method
-     # body omitted
+     # 내용 생략
    end
 
    # 나쁜 예
    def some_method_with_parameters param1, param2
-     # body omitted
+     # 내용 생략
    end
 
    # 좋은 예
    def some_method_with_parameters(param1, param2)
-     # body omitted
+     # 내용 생략
    end
    ```
+
+* <a name="method-invocation-parens"></a>
+  메소드를를 호출할 때 인자를 괄호로 감싼다. 특히 `f((3 + 2) + 1)`과 같이 첫 번째
+  인자가 여는 괄호(`(`)로 시작할 때 주의한다.
+<sup>[[link](#method-invocation-parens)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  x = Math.sin y
+  # 좋은 예
+  x = Math.sin(y)
+
+  # 나쁜 예
+  array.delete e
+  # 좋은 예
+  array.delete(e)
+
+  # 나쁜 예
+  temperance = Person.new 'Temperance', 30
+  # 좋은 예
+  temperance = Person.new('Temperance', 30)
+  ```
+
+  다음 경우에만 괄호를 생략한다.
+
+  * 인자가 없는 메소드 호출:
+
+    ```Ruby
+    # 나쁜 예
+    Kernel.exit!()
+    2.even?()
+    fork()
+    'test'.upcase()
+
+    # 좋은 예
+    Kernel.exit!
+    2.even?
+    fork
+    'test'.upcase
+    ```
+
+  * 내부 DSL을 구성하는 메소드(예: Rake, 레일스, RSpec):
+
+    ```Ruby
+    # 나쁜 예
+    expect(bowling.score).to eq 0
+    # 좋은 예
+    expect(bowling.score).to eq(0)
+    ```
+
+  * 루비에서 "키워드"로 취급되는 메소드:
+
+    ```Ruby
+    class Person
+      # 나쁜 예
+      attr_reader(:name, :age)
+      # 좋은 예
+      attr_reader :name, :age
+
+      # 내용 생략
+    end
+
+    # 나쁜 예
+    puts(temperance.age)
+    # 좋은 예
+    puts temperance.age
+    ```
 
 * <a name="optional-arguments"></a>
     선택적인 인자는 인자 목록의 마지막에 선언한다.
@@ -758,18 +847,18 @@
   ```
 
 * <a name="no-then"></a>
-  `if/unless`문의 내용이 여러 줄일 때에는 `then`을 쓰지 마라.
+  `if`/`unless`문의 내용이 여러 줄일 때에는 `then`을 쓰지 마라.
 <sup>[[link](#no-then)]</sup>
 
   ```Ruby
   # 나쁜 예
   if some_condition then
-    # body omitted
+    # 내용 생략
   end
 
   # 좋은 예
   if some_condition
-    # body omitted
+    # 내용 생략
   end
   ```
 
@@ -879,22 +968,22 @@
   `!!`의 사용은 피하라
 <sup>[[link](#no-bang-bang)]</sup>
 
+  `!!`는 값을 boolean으로 만들지만, 제어 구문의 조건문에서 명시적으로 변환할
+  필요는 없으며 의도를 불명확하게 만들 뿐이다. `nil` 검사를 하고 싶다면 `nil?`을
+  사용하라.
+
   ```Ruby
   # 나쁜 예
   x = 'test'
-  # 불분명한 nil 체크
+  # 불분명한 nil 검사
   if !!x
-    # body 생략
+    # 내용 생략
   end
-
-  x = false
-  # 이중 부정은 boolean타입에서 무용함
-  !!x # => false
 
   # 좋은 예
   x = 'test'
   unless x.nil?
-    # body 생략
+    # 내용 생략
   end
   ```
 
@@ -923,12 +1012,13 @@
   ```
 
 * <a name="no-multiline-ternary"></a>
-  여러 줄의 조건문에는 `?:`(삼항 연산자)를 피하라. 대신 `if/unless`를 사용하라.
+  여러 줄의 조건문에는 `?:`(삼항 연산자)를 피하라. 대신 `if`/`unless`를
+  사용하라.
 <sup>[[link](#no-multiline-ternary)]</sup>
 
 * <a name="if-as-a-modifier"></a>
-  구문이 한 줄일 때에는, 같은 줄 끝에 `if/unless`를 사용하는 것이 좋다.
-  또 다른 좋은 표현방법은 `&&/||`과 같은 제어문을 쓰는 것이다.
+  구문이 한 줄일 때에는, 같은 줄 끝에 `if`/`unless`를 사용하는 것이 좋다.
+  또 다른 좋은 표현방법은 `&&`/`||`과 같은 제어문을 쓰는 것이다.
 <sup>[[link](#if-as-a-modifier)]</sup>
 
   ```Ruby
@@ -945,26 +1035,26 @@
   ```
 
 * <a name="no-multiline-if-modifiers"></a>
-  간단하지 않고 여러 줄에 걸친 구문 블록에는 한 줄 `if/unless`를 피하라.
+  간단하지 않고 여러 줄에 걸친 구문 블록에는 한 줄 `if`/`unless`를 피하라.
 <sup>[[link](#no-multiline-if-modifiers)]</sup>
 
   ```Ruby
   # 나쁜 예
   10.times do
-    # multi-line body omitted
+    # 내용 여러 줄 생략
   end if some_condition
 
   # 좋은 예
   if some_condition
     10.times do
-      # multi-line body omitted
+      # 내용 여러 줄 생략
     end
   end
   ```
 
 * <a name="no-nested-modifiers"></a>
-  중첩된 `if/unless/while/until` 조건의 사용을 피하라. 적절하게 `&&/||`를
-  사용하라.
+  중첩된 `if`/`unless`/`while`/`until` 조건의 사용을 피하라. 적절하게
+  `&&`/`||`를 사용하라.
 <sup>[[link](#no-nested-modifiers)]</sup>
 
   ```Ruby
@@ -1020,12 +1110,12 @@
   ```Ruby
   # 나쁜 예
   if (x > 10)
-    # body omitted
+    # 내용 생략
   end
 
   # 좋은 예
   if x > 10
-    # body omitted
+    # 내용 생략
   end
   ```
 
@@ -1037,20 +1127,20 @@
   ```Ruby
   # 나쁜 예
   while x > 5 do
-    # body omitted
+    # 내용 생략
   end
 
   until x > 5 do
-    # body omitted
+    # 내용 생략
   end
 
   # 좋은 예
   while x > 5
-    # body omitted
+    # 내용 생략
   end
 
   until x > 5
-    # body omitted
+    # 내용 생략
   end
   ```
 
@@ -1120,50 +1210,6 @@
   end
   ```
 
-* <a name="no-dsl-parens"></a>
-  메소드가 다음 세 가지인 경우 매개변수를 감싸는 괄호를 생략하라.
-  1. 내장 DSL(예를 들어 Rake, 레일즈, RSpec 등)의 일부인 메소드
-  2. 루비에서 "키워드" 역할을 하고 있는 메소드(예를 들어 `attr_reader`, `puts`)
-  3. attribute 접근 메소드 이외의 다른 모든 메소드 호출 시 사용되는 매개변수들은
-     괄호로 감싸야 한다.
-<sup>[[link](#no-dsl-parens)]</sup>
-
-  ```Ruby
-  class Person
-    # 나쁜 예
-    attr_reader(:name, :age)
-    # 좋은 예
-    attr_reader :name, :age
-
-    # 내용 생략
-  end
-
-  # 나쁜 예
-  temperance = Person.new 'Temperance', 30
-  # 좋은 예
-  temperance = Person.new('Temperance', 30)
-
-  # 나쁜 예
-  puts(temperance.age)
-  # 좋은 예
-  puts temperance.age
-
-  # 나쁜 예
-  x = Math.sin y
-  # 좋은 예
-  x = Math.sin(y)
-
-  # 나쁜 예
-  array.delete e
-  # 좋은 예
-  array.delete(e)
-
-  # 나쁜 예
-  expect(bowling.score).to eq 0
-  # 좋은 예
-  expect(bowling.score).to eq(0)
-  ```
-
 * <a name="no-braces-opts-hash"></a>
   옵션들이 해시라면 가장 바깥 중괄호를 생략한다.
 <sup>[[link](#no-braces-opts-hash)]</sup>
@@ -1188,24 +1234,6 @@
     # 좋은 예
     validates :name, presence: true, length: { within: 1..10 }
   end
-  ```
-
-* <a name="no-args-no-parens"></a>
-  인수가 없는 메소드를 호출할 때 괄호를 생략한다.
-<sup>[[link](#no-args-no-parens)]</sup>
-
-  ```Ruby
-  # 나쁜 예
-  Kernel.exit!()
-  2.even?()
-  fork()
-  'test'.upcase()
-
-  # 좋은 예
-  Kernel.exit!
-  2.even?
-  fork
-  'test'.upcase
   ```
 
 * <a name="single-action-blocks"></a>
@@ -1512,11 +1540,6 @@
   # 좋은 예
   f(3 + 2) + 1
   ```
-
-* <a name="parens-as-args"></a>
-  메소드가 시작할 때의 첫 번째 인수가 괄호로 시작하면 메소드 호출 시 항상 괄호를
-  사용하라. 예를 들면, `f((3 + 2) + 1)`처럼 쓴다.
-<sup>[[link](#parens-as-args)]</sup>
 
 * <a name="always-warn-at-runtime"></a>
   항상 `-w` 옵션과 함께 루비 인터프리터를 실행하라. 그러면 위의 규칙들을
@@ -1839,7 +1862,7 @@
   # 나쁜 예
   def compute_thing(thing)
     if thing[:foo]
-      update_with_bar(thing)
+      update_with_bar(thing[:foo])
       if thing[:foo][:bar]
         partial_compute(thing)
       else
@@ -2146,7 +2169,7 @@
 
   ```Ruby
   def +(other)
-    # body omitted
+    # 내용 생략
   end
   ```
 
@@ -2187,12 +2210,12 @@
   주석은 최신 상태로 유지한다. 코드내용과 맞지 않은 주석은 없는 것이 낫다.
 <sup>[[link](#comment-upkeep)]</sup>
 
-> 좋은 주석은 좋은 유머와 같다. - 설명이 필요없다. <br>
-> -- Russ Olsen
+> 좋은 주석은 좋은 유머와 같다. 설명이 필요없다. <br>
+> &mdash; 오래된 프로그래머 격언, [Russ Olsen](http://eloquentruby.com/blog/2011/03/07/good-code-and-good-jokes/)
 
 * <a name="refactor-dont-comment"></a>
   나쁜 코드에 대해서 주석을 달지 마라. 코드가 스스로 설명할 수 있도록 리펙토링
-  하라.(하거나 안 하거나 둘 중 하나다. 노력했다는 것은 없다. -- Yoda)
+  하라.("한다, 안 한다가 있을 뿐이야. 해보는 건 없어." Yoda)
 <sup>[[link](#refactor-dont-comment)]</sup>
 
 ### 주석 어노테이션
@@ -2472,6 +2495,36 @@
   end
   ```
 
+* <a name="accessor_mutator_method_names"></a>
+  accessor와 mutator 메소드 이름에 `get_` 및 `set_` 접두사를 사용하지 않는다.
+  루비 컨벤션에 따르면 accessor(reader) 메소드에 속성 이름을 사용하고
+  mutator(writer) 메소드에 `attr_name=`을 사용한다.
+<sup>[[link](#accessor_mutator_method_names)]</sup>
+
+  ```Ruby
+  # 나쁜 예
+  class Person
+    def get_name
+      "#{@first_name} #{@last_name}"
+    end
+
+    def set_name(name)
+      @first_name, @last_name = name.split(' ')
+    end
+  end
+
+  # 좋은 예
+  class Person
+    def name
+      "#{@first_name} #{@last_name}"
+    end
+
+    def name=(name)
+      @first_name, @last_name = name.split(' ')
+    end
+  end
+  ```
+
 * <a name="attr"></a>
   그냥 `attr`을 사용하지 말고 `attr_reader`나 `attr_accessor`을 사용한다.
 <sup>[[link](#attr)]</sup>
@@ -2530,7 +2583,7 @@
   ```Ruby
   class Person
     def self.create(options_hash)
-      # body 생략
+      # 내용 생략
     end
   end
   ```
@@ -2637,23 +2690,23 @@
   class TestClass
     # 나쁜 예
     def TestClass.some_method
-      # body 생략
+      # 내용 생략
     end
 
     # 좋은 예
     def self.some_other_method
-      # body 생략
+      # 내용 생략
     end
 
     # 클래스 메소드가 많은 경우 아래와 같이
     # 사용하면 편리하다.
     class << self
       def first_method
-        # body 생략
+        # 내용 생략
       end
 
       def second_method_etc
-        # body 생략
+        # 내용 생략
       end
     end
   end
@@ -3442,6 +3495,34 @@
   END
   ```
 
+## 날짜 및 시간
+
+* <a name="time-now"></a>
+  시스템의 현재 시각을 가져올 때 `Time.new` 대신 `Time.now`를 사용한다.
+<sup>[[link](#time-now)]</sup>
+
+* <a name="no-datetime"></a>
+  구시대의 달력이 필요한 것이 아니라면 `DateTime`을 사용하지 않는다. 필요할
+  때에는 `start` 인자를 명시적으로 지정해서 의도를 확실히 나타낸다.
+<sup>[[link](#no-datetime)]</sup>
+
+  ```Ruby
+  # 나쁜 예 - 현재 시각을 위해 DateTime을 사용함
+  DateTime.now
+
+  # 좋은 예 - 현재 시각을 위해 Time을 사용함
+  Time.now
+
+  # 나쁜 예 - 그레고리력 날짜를 위해 DateTime을 사용함
+  DateTime.iso8601('2016-06-29')
+
+  # 좋은 예 - 그레고리력 날짜를 위해 Date를 사용함
+  Date.iso8601('2016-06-29')
+
+  # 좋은 예 - 율리우스력 날짜를 위해 DateTime을 start 인자와 함께 사용함
+  DateTime.iso8601('1751-04-23', Date::ENGLAND)
+  ```
+
 ## 정규식
 
 > 어떤 사람들은 문제에 직면했을 때 다음과 같이 생각한다.<br>
@@ -3663,7 +3744,7 @@
 
 * <a name="eval-comment-docs"></a>
   문자열 삽입과 함께 `class_eval`(또는 다른 `eval`)을 사용할 때는 실행되어
-  보여지게 될 코드를 주석으로 추가한다.(레일즈 코드를 참고)
+  보여지게 될 코드를 주석으로 추가한다.(레일스 코드를 참고)
 <sup>[[link](#eval-comment-docs)]</sup>
 
   ```ruby
@@ -3824,10 +3905,6 @@
   `ruby -s`를 사용한다.
 <sup>[[link](#optionparser)]</sup>
 
-* <a name="time-now"></a>
-  현재 시스템 시간을 가져올 때 `Time.new` 대신 `Time.now`를 사용하라.
-<sup>[[link](#time-now)]</sup>
-
 * <a name="functional-code"></a>
   코드에서 되도록 변경을 피하고 함수형 방식을 사용하라.
 <sup>[[link](#functional-code)]</sup>
@@ -3866,12 +3943,12 @@
 
 # 참여하기
 
-이 가이드는 아직 완성되지 않았다. - 몇 가지 규칙은 예제가 없고, 몇 가지 규칙은
-충분하고 명확한 설명이 없다. 그런 규칙을 보완해 루비 커뮤니티를 훌륭히(또 간단히)
-도울 수 있다.
+이 가이드는 아직 완성되지 않았다. &mdash; 몇 가지 규칙은 예제가 없고, 몇 가지
+규칙은 충분하고 명확한 설명이 없다. 그런 규칙을 보완해 루비 커뮤니티를 훌륭히(또
+간단히) 도울 수 있다.
 
-(바라건대)이러한 문제들은 곧 해결될 것이다. - 일단 그렇다는 걸 기억하고 있으면
-된다.
+(바라건대)이러한 문제들은 곧 해결될 것이다. &mdash; 일단 그렇다는 걸 기억하고
+있으면 된다.
 
 이 가이드는 확정된 가이드가 아니다. 나는 루비 코딩 스타일에 흥미를 가지고 있는
 사람들과 함께 만들어가고 싶다. 그래서 모든 루비 커뮤니티에서 유용하게 사용될
