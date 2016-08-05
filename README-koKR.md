@@ -565,7 +565,7 @@
   # 나쁜 예
   num = 01234
   num = 0O1234
-  num = 00X12AB
+  num = 0X12AB
   num = 0B10101
   num = 0D1234
   num = 0d1234
