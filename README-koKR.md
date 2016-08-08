@@ -658,7 +658,7 @@
    ```
 
 * <a name="method-invocation-parens"></a>
-  메소드를를 호출할 때 인자를 괄호로 감싼다. 특히 `f((3 + 2) + 1)`과 같이 첫 번째
+  메소드를 호출할 때 인자를 괄호로 감싼다. 특히 `f((3 + 2) + 1)`과 같이 첫 번째
   인자가 여는 괄호(`(`)로 시작할 때 주의한다.
 <sup>[[link](#method-invocation-parens)]</sup>
 
@@ -807,7 +807,7 @@
 
   # 좋은 예
   foo = 'one,two,three,four,five'
-  # 밑줄 변수는 마지막 밑줄 요소를 재외한 전 요소를 가져오고 싶다는걸 보여주기
+  # 밑줄 변수는 마지막 밑줄 요소를 제외한 전 요소를 가져오고 싶다는걸 보여주기
   # 위해 필요하다.
   *beginning, _ = foo.split(',')
   *beginning, something, _ = foo.split(',')
@@ -1515,8 +1515,8 @@
   ```
 
 * <a name="no-cryptic-perlisms"></a>
-  펄 스타일의 특수 변수(`$:`, `$;` 등)사용을 피하라. 그들은 상당히
-  기괴해 보이고, one-liner 스크립트 외의 그것들의 사용은 읽기 힘들다. `English`
+  펄 스타일의 특수 변수(`$:`, `$;` 등) 사용을 피하라. 그들은 상당히
+  기괴해 보이고, one-liner 스크립트 외에서 사용된 경우에는 읽기 힘들다. `English`
   라이브러리에서 제공하는 인간 친화적인 alias를 사용하라.
 <sup>[[link](#no-cryptic-perlisms)]</sup>
 
@@ -1619,7 +1619,7 @@
   ```
 
 * <a name="stabby-lambda-no-args"></a>
-매개변수와 없이 새로운 람다(stabby lambda)를 사용할 때에는 매개변수 괄호를
+매개변수 없이 새로운 람다(stabby lambda)를 사용할 때에는 매개변수 괄호를
 생략한다.
 <sup>[[link](#stabby-lambda-no-args)]</sup>
 
@@ -1794,6 +1794,9 @@
   if x == nil
   end
 
+  if x == 0
+  end
+
   # 좋은 예
   if x.even?
   end
@@ -1805,9 +1808,6 @@
   end
 
   if x.zero?
-  end
-
-  if x == 0
   end
   ```
 
@@ -2207,7 +2207,7 @@
   ```
 
 * <a name="comment-upkeep"></a>
-  주석은 최신 상태로 유지한다. 코드내용과 맞지 않은 주석은 없는 것이 낫다.
+  주석은 최신 상태로 유지한다. 코드내용과 맞지 않는 주석은 없는 것이 낫다.
 <sup>[[link](#comment-upkeep)]</sup>
 
 > 좋은 주석은 좋은 유머와 같다. 설명이 필요없다. <br>
@@ -2464,7 +2464,7 @@
   ```
 
 * <a name="attr_family"></a>
-  특별한 일을 하지 않는 accesstor나 mutator는 `attr`류의 함수를 사용한다.
+  특별한 일을 하지 않는 accessor나 mutator는 `attr`류의 함수를 사용한다.
 <sup>[[link](#attr_family)]</sup>
 
   ```Ruby
@@ -3852,10 +3852,10 @@
   u1.bind('127.0.0.1', 4913)
   u2 = UDPSocket.new
   u2.connect('127.0.0.1', 4913)
-  # 받을 객체에 메세지를 보내지 않음.
-  # 대신 UDP 소켓에 메세지를 보냄.
+  # 받을 객체에 메시지를 보내지 않음.
+  # 대신 UDP 소켓에 메시지를 보냄.
   u2.send :sleep, 0
-  # 받을 객에세 메세지를 보냄.
+  # 받을 객체에 메시지를 보냄.
   u2.__send__ ...
   ```
 
