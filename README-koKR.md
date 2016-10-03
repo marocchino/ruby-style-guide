@@ -396,10 +396,10 @@
   ```Ruby
   # 나쁜 예 - 쉽게 인수를 이동/추가/삭제할 수 있지만 여전히 권장하진 않는다.
   some_method(
-               size,
-               count,
-               color,
-             )
+    size,
+    count,
+    color,
+  )
 
   # 나쁜 예
   some_method(size, count, color, )
@@ -3304,6 +3304,19 @@
   # 좋은 예
   timestamp.is_a? Integer
   ```
+
+  * <a name="random-numbers"></a>
+    난수를 생성할 때 정수와 오프셋 대신 범위를 사용하라.
+    의도를 더 명확히 표현할 수 있다. 주사위를 굴리는 상황을 생각해 보자.
+  <sup>[[link](#random-numbers)]</sup>
+
+    ```Ruby
+    # 나쁜 예
+    rand(6) + 1
+
+    # 좋은 예
+    rand(1..6)
+    ```
 
 ## 문자열
 
